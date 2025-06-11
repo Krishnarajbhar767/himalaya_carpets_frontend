@@ -102,7 +102,7 @@ function Header() {
         >
             <header className="bg-white text-foreground px-4 sm:px-6 h-20 shadow flex items-center justify-between">
                 {/* ─── Desktop Nav (md and up) ─── */}
-                <nav className="hidden md:flex gap-6 text-foreground font-medium text-sm lg:text-[14px] tracking-wide uppercase">
+                <nav className="hidden md:flex gap-6 md:gap-3 lg:gap-6 text-foreground font-medium text-sm lg:text-[14px] tracking-wide uppercase text-nowrap">
                     {Links.map((link) => (
                         <div key={link.title} className="relative group">
                             {link.subLinks ? (

@@ -337,21 +337,6 @@ function CategoryPage() {
                                             </p>
 
                                             {/* Rating and Reviews */}
-                                            {product.rating && (
-                                                <div className="flex items-center gap-2">
-                                                    <div className="flex items-center">
-                                                        {renderStars(
-                                                            product.rating
-                                                        )}
-                                                    </div>
-                                                    <span className="text-sm text-foreground">
-                                                        {product.rating} (
-                                                        {product.reviewCount ||
-                                                            0}{" "}
-                                                        reviews)
-                                                    </span>
-                                                </div>
-                                            )}
 
                                             {/* Price and Stock */}
                                             <div className="flex justify-between items-center">

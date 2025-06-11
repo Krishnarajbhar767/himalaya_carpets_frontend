@@ -246,7 +246,7 @@ function ProductDetailsPage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Breadcrumb Navigation */}
                 <div className="mb-6">
-                    <nav className="flex items-center space-x-2 text-sm text-foreground">
+                    <nav className="flex items-center space-x-2 text-[11px] md:text-sm text-foreground text-nowrap">
                         <Link
                             to="/"
                             className="hover:text-gray-900 text-foreground"
@@ -317,7 +317,7 @@ function ProductDetailsPage() {
                             />
                             <button
                                 onClick={() => setIsZoomed(false)}
-                                className="absolute top-4 right-4 bg-white text-foreground p-2 rounded-full hover:bg-gray-100 transition-colors"
+                                className="absolute top-4 right-4 bg-white text-foreground p-2  rounded-full hover:bg-gray-100 transition-colors"
                             >
                                 ✕
                             </button>

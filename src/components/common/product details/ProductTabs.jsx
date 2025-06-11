@@ -34,7 +34,11 @@ function ProductTabs({ product, reviews = [] }) {
 
     const tabs = [
         { id: "specifications", label: "Specifications", icon: Package },
-        { id: "reviews", label: `Reviews (${reviews.length})`, icon: Star },
+        {
+            id: "reviews",
+            label: `Reviews (${product?.reviews.length})`,
+            icon: Star,
+        },
         { id: "shipping", label: "Shipping & Returns", icon: Truck },
     ];
 
@@ -149,14 +153,14 @@ function ProductTabs({ product, reviews = [] }) {
                                     {renderStars(product?.rating || 4.5)}
                                 </div>
                                 <span className="text-sm text-foreground">
-                                    {product?.rating || 4.5} out of 5 (
-                                    {reviews.length} reviews)
+                                    {product?.rating || 0} out of 5 (
+                                    {product?.reviews?.length} reviews)
                                 </span>
                             </div>
                         </div>
 
                         <div className="space-y-6">
-                            {reviews.map((review, index) => (
+                            {product?.reviews?.map((review, index) => (
                                 <div
                                     key={index}
                                     className="border-b border-gray-100 pb-6 last:border-b-0"
@@ -168,13 +172,13 @@ function ProductTabs({ product, reviews = [] }) {
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <span className="font-medium text-foreground">
-                                                    {review.user}
+                                                    {review?.user?.firstName}{" "}
+                                                    {review?.user?.lastName}
                                                 </span>
-                                                {review.verified && (
-                                                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                                                        Verified Purchase
-                                                    </span>
-                                                )}
+
+                                                <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                                                    Verified Purchase
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-2 mb-2">
                                                 <div className="flex">
@@ -183,8 +187,15 @@ function ProductTabs({ product, reviews = [] }) {
                                                 <span className="text-sm text-foreground flex items-center gap-1">
                                                     <Calendar className="w-3 h-3" />
                                                     {new Date(
-                                                        review.date
-                                                    ).toLocaleDateString()}
+                                                        review.createdAt
+                                                    ).toLocaleDateString(
+                                                        "en-GB",
+                                                        {
+                                                            day: "2-digit",
+                                                            month: "2-digit",
+                                                            year: "numeric",
+                                                        }
+                                                    )}
                                                 </span>
                                             </div>
                                             <p className="text-foreground leading-relaxed">

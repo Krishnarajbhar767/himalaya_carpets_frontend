@@ -191,8 +191,8 @@ function ProductInfo({
                                 {renderStars(product?.rating)}
                             </div>
                             <span className="text-sm text-foreground">
-                                {product?.rating || "4.5"} (
-                                {product?.reviewCount || 0} reviews)
+                                {product?.rating || 0} (
+                                {product?.reviews?.length || 0} reviews)
                             </span>
                         </div>
                     </div>
