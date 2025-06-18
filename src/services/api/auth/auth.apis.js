@@ -40,7 +40,7 @@ const authApis = {
         const res = await axiosInstance.put(authEndpoints.changePassword, data);
         return res;
     },
-    forgotPasswordToken: async (userId) => {},
+    forgotPasswordToken: async (email) => {}, // This Was Directly Called IN ResetPassword Component
     getUser: async (token) => {
         const res = await axiosInstance.get(
             authEndpoints.getUserDetails,

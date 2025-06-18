@@ -15,7 +15,12 @@ createRoot(document.getElementById("root")).render(
         <ReduxProvider store={store}>
             <App />
 
-            <Toaster />
+            <Toaster
+                containerStyle={{
+                    zIndex: 999999999999,
+                    textTransform: "capitalize",
+                }}
+            />
         </ReduxProvider>
     </BrowserRouter>
 );

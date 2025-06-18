@@ -15,6 +15,7 @@ import PaymentSuccess from "../components/common/PaymentSuccess";
 import PaymentFailed from "../components/common/PaymentFailed";
 import AboutUs from "../pages/public/about/About";
 import ContactUs from "../pages/public/contact/ContactUs";
+import ResetPasswordMain from "../pages/public/reset password/ResetPasswordMain";
 
 const PublicRoutes = (
     <Route element={<MainLayout />}>
@@ -22,6 +23,7 @@ const PublicRoutes = (
         <Route path="/login" element={<Login />} />
         <Route path="/Sign-up" element={<SignUp />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordMain />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/About" element={<AboutUs />} />
         <Route path="/products/:category/:id" element={<CategoryPage />} />

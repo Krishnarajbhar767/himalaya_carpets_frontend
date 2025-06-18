@@ -4,6 +4,8 @@ import Button from "../../../components/common/Button";
 import { useForm } from "react-hook-form";
 import Heading from "../home/components/Heading";
 import { Link } from "react-router-dom";
+import axiosInstance from "../../../utils/apiConnector";
+import toast from "react-hot-toast";
 
 function ResetPassword() {
     const {
@@ -11,20 +13,34 @@ function ResetPassword() {
         register,
         formState: { errors },
         watch,
+        reset,
     } = useForm();
     const emailValue = watch("email");
+    const handleSendResetLink = async (data) => {
+        const toastId = toast.loading("Please wait");
+        try {
+            const res = await axiosInstance.post(
+                "/auth/forgot-password-token",
+                data
+            );
+            toast.success("Reset link sent");
+            reset();
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response?.data?.message);
+        } finally {
+            toast.dismiss(toastId);
+        }
+    };
     return (
         <div>
             <div className="boxedContainer px-8 md:w-[40%]  h-auto py-6">
                 <Heading text={"Reset Password"} />
                 <form
                     className="flex flex-col gap-2 mt-6"
-                    onSubmit={handleSubmit(
-                        (data) => alert(data),
-                        (err) => console.log(err)
-                    )}
+                    onSubmit={handleSubmit(handleSendResetLink)}
                 >
-                    <h1 className="text-sm text-gray-400 mb-3 text-center">
+                    <h1 className="text-sm text-foreground mb-3 text-center">
                         We will send you an email to reset your password
                     </h1>
                     <InputField

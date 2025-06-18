@@ -45,17 +45,26 @@ const SelectField = ({
                 name={name}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
-                className="w-full p-3 py-4 border-[2px] border-gray-400 focus:outline-none focus:border-gray-800 text-gray-700 bg-white appearance-none transition-all duration-100 ease-linear"
+                className="w-full p-3 py-4 border-[2px] border-foreground/50 focus:outline-none focus:border-foreground text-foreground bg-white appearance-none transition-all duration-100 ease-linear capitalize"
                 defaultValue={value}
                 disabled={readOnly}
             >
                 <option value="" disabled hidden></option>
-                {options.map((opt) => (
-                    <option key={opt.value} value={opt?.value}>
-                        {console.log(opt)}
-                        {opt?.label}
-                    </option>
-                ))}
+                {options.map((opt, idx) => {
+                    if (opt?.label === "all") {
+                        return;
+                    }
+                    return (
+                        <option
+                            key={opt.value}
+                            value={opt?.value}
+                            className="capitalize text-foreground"
+                        >
+                            {console.log(opt)}
+                            {opt?.label}
+                        </option>
+                    );
+                })}
             </select>
             <label
                 htmlFor={name}

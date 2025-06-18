@@ -1,4 +1,5 @@
 import React from "react";
+import { useForm } from "react-hook-form";
 import {
     FaFacebookF,
     FaTwitter,
@@ -7,10 +8,31 @@ import {
     FaPinterest,
     FaChevronUp,
 } from "react-icons/fa";
+import axiosInstance from "../../utils/apiConnector";
+import toast from "react-hot-toast";
+import { handleAxiosError } from "../../utils/handleAxiosError";
 
 const primaryColor = "rgb(83, 62, 45)";
 
 const Footer = () => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm();
+    const subscribeNewsHandler = async (data) => {
+        const toastId = toast.loading("Please wait");
+        try {
+            const res = await axiosInstance.post("/newsletter", data);
+            toast.success("Thanks for joining our newsletter!");
+            reset();
+        } catch (error) {
+            const err = handleAxiosError(error);
+        } finally {
+            toast.dismiss(toastId);
+        }
+    };
     return (
         <footer
             className="bg-[#E4E4E4] pt-12 pb-4"
@@ -181,17 +203,24 @@ const Footer = () => {
                             promotions, and much more!
                         </p>
 
-                        <div className="flex flex-col sm:flex-row mb-6 gap-2">
+                        <form
+                            className="flex flex-col sm:flex-row mb-6 gap-2"
+                            onSubmit={handleSubmit(subscribeNewsHandler)}
+                        >
                             <input
+                                {...register("email")}
+                                required
                                 type="email"
                                 placeholder="Your email address"
-                                className="w-full p-2 border"
+                                className="w-full p-2 border outline:foreground focus:ring-[2px] focus:ring-foreground
+                                focus:border-transparent outline-none focus:rounded-none"
                                 style={{
                                     borderColor: primaryColor,
                                     color: primaryColor,
                                 }}
                             />
                             <button
+                                type="submit"
                                 className="w-full sm:w-auto px-4 py-2 font-medium"
                                 style={{
                                     backgroundColor: primaryColor,
@@ -200,7 +229,7 @@ const Footer = () => {
                             >
                                 JOIN
                             </button>
-                        </div>
+                        </form>
 
                         <p
                             className="text-sm font-medium mb-3"

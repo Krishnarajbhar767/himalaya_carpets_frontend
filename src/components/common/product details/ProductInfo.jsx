@@ -10,12 +10,15 @@ import {
     Truck,
     Shield,
     RotateCcw,
+    Minus,
+    Plus,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../utils/apiConnector";
 import { setWishList } from "../../../redux/slices/wishListSlice";
 import slugify from "slugify";
+import BookVideoCallModal from "../BookVideoCall";
 
 /**
  * ProductInfo Component
@@ -33,6 +36,7 @@ function ProductInfo({
     const [selectedSize, setSelectedSize] = useState("");
     const [quantity, setQuantity] = useState(1);
     const [isWishlisted, setIsWishlisted] = useState(false);
+    const [isBookCallModalOpen, setIsBookCallModalOpen] = useState(false);
     const [withCustomization, setWithCustomization] = useState(false);
     const [isAlreadyInCart, setIsAlreadyInCart] = useState(false);
     const navigate = useNavigate();
@@ -219,7 +223,20 @@ function ProductInfo({
                         </button>
                     </div>
                 </div>
-
+                <div>
+                    <span
+                        onClick={() => setIsBookCallModalOpen(true)}
+                        className="px-6 py-2 border bg-gray-50 cursor-pointer hover:bg-gray-100"
+                    >
+                        Book A Video Call
+                    </span>
+                    {isBookCallModalOpen && (
+                        <BookVideoCallModal
+                            isOpen={isBookCallModalOpen}
+                            onClose={() => setIsBookCallModalOpen(false)}
+                        />
+                    )}
+                </div>
                 {/* Price Section */}
                 <div className="flex items-center gap-3">
                     <span className="text-3xl font-medium text-foreground">
@@ -399,9 +416,9 @@ function ProductInfo({
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="w-10 h-10 border border-foreground rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+                        className=" w-10 h-10 border border-foreground rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
                     >
-                        -
+                        <Minus />
                     </button>
                     <span className="w-12 text-center font-medium">
                         {quantity}
@@ -414,7 +431,7 @@ function ProductInfo({
                         }
                         className="w-10 h-10 border border-foreground rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
                     >
-                        +
+                        <Plus />
                     </button>
                 </div>
             </div>

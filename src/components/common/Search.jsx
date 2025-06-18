@@ -123,7 +123,7 @@ const SearchContent = ({ categories, products, closeHandler, query }) => (
         <h1 className="font-medium text-base sm:text-lg text-foreground tracking-wide mt-2">
             Quick Links
         </h1>
-        <ul className="text-foreground mt-2 space-y-1 text-xs sm:text-sm tracking-wide capitalize flex flex-col ">
+        <ul className="text-foreground mt-2 space-y-1 text-sm sm:text-md font-medium tracking-wide capitalize flex flex-col ">
             {categories?.slice(0, 3).map((item) => {
                 const slug = slugify(item.name, {
                     lower: true,
@@ -143,7 +143,7 @@ const SearchContent = ({ categories, products, closeHandler, query }) => (
         </ul>
 
         {/* Products */}
-        <h1 className="font-medium text-base sm:text-lg text-foreground mt-4">
+        <h1 className="font-medium text-lg sm:text-lg text-foreground mt-4">
             {query ? "Search Results" : "Need some inspiration?"}
         </h1>
         <div className="mt-3 space-y-3">
@@ -156,7 +156,7 @@ const SearchContent = ({ categories, products, closeHandler, query }) => (
                     />
                 ))
             ) : (
-                <p className="text-sm text-gray-500">No products found.</p>
+                <p className="text-sm text-foreground">No products found.</p>
             )}
         </div>
     </div>
@@ -164,22 +164,25 @@ const SearchContent = ({ categories, products, closeHandler, query }) => (
 
 const ProductCard = ({ item, closeHandler }) => (
     <Link to={`/product/${item._id}`} onClick={closeHandler}>
-        <div className="flex h-20 sm:h-24 gap-3 border-b last:border-b-0 border-foreground/40 pb-3">
+        <div className="flex h-36 sm:h-36 gap-3 border-b last:border-b-0 border-foreground/40 pb-3">
             {/* Image */}
-            <div className="w-16 sm:w-20">
+            <div className="w-36 sm:w-36">
                 <img
                     src={item.images?.[0]}
-                    className="h-full w-full object-cover cursor-pointer"
+                    className="h-full w-full object-cover object-top cursor-pointer"
                     alt={item?.name}
                 />
             </div>
             {/* Info */}
-            <div className="flex-1 space-y-1 mt-1">
-                <h1 className="capitalize text-xs sm:text-sm cursor-pointer line-clamp-1">
+            <div className="flex-1 space-y-1 mt-1 overflow-hidden">
+                <h1 className="capitalize text-md sm:text-lg font-medium cursor-pointer line-clamp-1">
                     {item?.name}
                 </h1>
-                <h2 className="text-xs sm:text-sm cursor-pointer">
-                    {item?.price}
+                <h2 className="text-sm sm:text-md cursor-pointer font-normal">
+                    &#x20B9; {item?.price}
+                </h2>
+                <h2 className="text-xs sm:text-sm cursor-pointer line-clamp-3">
+                    {item?.description}
                 </h2>
             </div>
         </div>

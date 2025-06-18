@@ -31,7 +31,13 @@ function Header() {
     // Build category-based sublinks
     const [optimisedCategoriesList, setOptimisedCategoriesList] = useState([]);
     useEffect(() => {
-        const navLinks = categories.map((item) => {
+        const sortedCategories = [...categories].sort((a, b) => {
+            if (a.name.toLowerCase() === "all") return -1;
+            if (b.name.toLowerCase() === "all") return 1;
+            return 0;
+        });
+
+        const navLinks = sortedCategories.map((item) => {
             const slug = slugify(item.name, { lower: true, strict: true });
             return {
                 title: item.name,
@@ -102,7 +108,7 @@ function Header() {
         >
             <header className="bg-white text-foreground px-4 sm:px-6 h-20 shadow flex items-center justify-between">
                 {/* ─── Desktop Nav (md and up) ─── */}
-                <nav className="hidden md:flex gap-6 md:gap-3 lg:gap-6 text-foreground font-medium text-sm lg:text-[14px] tracking-wide uppercase text-nowrap">
+                <nav className="hidden md:flex gap-6 md:gap-3 lg:gap-6 text-foreground font-medium text-sm lg:text-[14px] tracking-wide uppercase ">
                     {Links.map((link) => (
                         <div key={link.title} className="relative group">
                             {link.subLinks ? (
