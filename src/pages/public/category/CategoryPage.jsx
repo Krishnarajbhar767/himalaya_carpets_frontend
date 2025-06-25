@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import SidebarFilter from "../../../components/common/SidebarFilter";
 import { Star, Filter, Grid, List, ChevronDown } from "lucide-react";
 
-// Enhanced CategoryPage Component with premium UI and better mobile experience
+// Enhanced CategoryPage Component adapted for Carpet schema
 function CategoryPage() {
     const { id, category } = useParams();
     const displayCategory = category?.replace(/-/g, " ") || "Category";
@@ -55,13 +55,14 @@ function CategoryPage() {
                 if (!response.ok)
                     throw new Error("Failed to fetch category data");
                 const data = await response.json();
-                setProducts(data?.data?.products || []);
-                setFilteredProducts(data?.data?.products || []);
+                const prods = data?.data?.products || [];
+                setProducts(prods);
+                setFilteredProducts(prods);
                 setCategoryDetails({
                     name: data?.data?.name || displayCategory,
                     description:
                         data?.data?.description ||
-                        "Explore our curated collection of premium products.",
+                        "Explore our curated collection of premium carpets with various materials, weaves, textures, and styles.",
                 });
             } catch (err) {
                 setError(err.message);
@@ -72,23 +73,30 @@ function CategoryPage() {
         fetchProducts();
     }, [id, displayCategory]);
 
-    // Handle filter changes
+    // Handle filter changes: filters may include priceRange, material, weaving, texture, size, style, color
     const handleFilterChange = (filters) => {
-        const { priceRange, fabric, color, technique } = filters;
+        const { priceRange, material, weaving, texture, size, style, color } =
+            filters;
         let filtered = products.filter((product) => {
             const inPriceRange =
                 product.price >= priceRange[0] &&
                 product.price <= priceRange[1];
-            const matchesFabric = fabric ? product.fabric === fabric : true;
-            const matchesColor = color ? product.color === color : true;
-            const matchesTechnique = technique
-                ? product.technique === technique
+            const matchesMaterial = material
+                ? product.material === material
                 : true;
+            const matchesWeaving = weaving ? product.weaving === weaving : true;
+            const matchesTexture = texture ? product.texture === texture : true;
+            const matchesSize = size ? product.size === size : true;
+            const matchesStyle = style ? product.style === style : true;
+            const matchesColor = color ? product.color === color : true;
             return (
                 inPriceRange &&
-                matchesFabric &&
-                matchesColor &&
-                matchesTechnique
+                matchesMaterial &&
+                matchesWeaving &&
+                matchesTexture &&
+                matchesSize &&
+                matchesStyle &&
+                matchesColor
             );
         });
 
@@ -138,9 +146,9 @@ function CategoryPage() {
     };
 
     return (
-        <main className=" ">
+        <main>
             <div className="boxedContainer pb-4">
-                {/* Enhanced Header Section */}
+                {/* Header Section */}
                 <div className="py-8 border-b border-gray-200 bg-white mb-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center space-y-4">
@@ -160,7 +168,7 @@ function CategoryPage() {
                     </div>
                 </div>
 
-                {/* Enhanced Filter and Sort Controls */}
+                {/* Filter and Sort Controls */}
                 <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                     <div className="flex items-center gap-4">
                         <button
@@ -222,14 +230,14 @@ function CategoryPage() {
                 </div>
 
                 <div className="flex gap-8">
-                    {/* Enhanced Sidebar Filter */}
+                    {/* Sidebar Filter */}
                     <SidebarFilter
                         onFilterChange={handleFilterChange}
                         isOpen={isSidebarOpen}
                         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
                     />
 
-                    {/* Enhanced Product Grid */}
+                    {/* Product Grid/List */}
                     <div className="flex-1">
                         {loading ? (
                             <div
@@ -297,9 +305,8 @@ function CategoryPage() {
                                         >
                                             <img
                                                 src={
-                                                    product.images[0] ||
-                                                    "/placeholder.svg?height=400&width=400" ||
-                                                    "/placeholder.svg"
+                                                    product.images?.[0] ||
+                                                    "/placeholder.svg?height=400&width=400"
                                                 }
                                                 alt={product.name}
                                                 className="w-full h-full object-cover object-top group-hover:scale-102 transition-transform duration-300"
@@ -333,10 +340,19 @@ function CategoryPage() {
                                             {/* Product Description */}
                                             <p className="text-sm text-foreground line-clamp-2 leading-relaxed">
                                                 {product.description ||
-                                                    "Premium quality product with excellent craftsmanship."}
+                                                    "High-quality handmade carpet."}
                                             </p>
 
                                             {/* Rating and Reviews */}
+                                            <div className="flex items-center gap-1">
+                                                {renderStars(product.rating)}
+                                                <span className="text-xs text-foreground">
+                                                    (
+                                                    {product.reviews?.length ||
+                                                        0}
+                                                    )
+                                                </span>
+                                            </div>
 
                                             {/* Price and Stock */}
                                             <div className="flex justify-between items-center">
@@ -345,6 +361,11 @@ function CategoryPage() {
                                                         ₹
                                                         {product.price?.toLocaleString() ||
                                                             "N/A"}
+                                                        {product.psft && (
+                                                            <span className="text-sm font-medium">
+                                                                /sqft
+                                                            </span>
+                                                        )}
                                                     </p>
                                                     {product.originalPrice &&
                                                         product.originalPrice >
@@ -358,24 +379,48 @@ function CategoryPage() {
                                                 <div className="text-right">
                                                     <p className="text-sm text-foreground">
                                                         Stock:{" "}
-                                                        {product.stock || "N/A"}
+                                                        {product.stock || 0}
                                                     </p>
                                                 </div>
                                             </div>
 
-                                            {/* Product Details */}
+                                            {/* Product Details Grid */}
                                             <div className="grid grid-cols-2 gap-2 text-xs text-foreground bg-gray-50 p-3 rounded-lg">
                                                 <div>
                                                     <span className="font-medium">
-                                                        Fabric:
+                                                        Material:
                                                     </span>{" "}
-                                                    {product.fabric || "N/A"}
+                                                    {product.material || "N/A"}
                                                 </div>
                                                 <div>
                                                     <span className="font-medium">
-                                                        Color:
+                                                        Weaving:
                                                     </span>{" "}
-                                                    {product.color || "N/A"}
+                                                    {product.weaving || "N/A"}
+                                                </div>
+                                                <div>
+                                                    <span className="font-medium">
+                                                        Texture:
+                                                    </span>{" "}
+                                                    {product.texture || "N/A"}
+                                                </div>
+                                                <div>
+                                                    <span className="font-medium">
+                                                        Size:
+                                                    </span>{" "}
+                                                    {product.size || "N/A"}
+                                                </div>
+                                                <div>
+                                                    <span className="font-medium">
+                                                        Style:
+                                                    </span>{" "}
+                                                    {product.style || "N/A"}
+                                                </div>
+                                                <div>
+                                                    <span className="font-medium">
+                                                        HSN Code:
+                                                    </span>{" "}
+                                                    {product.hsnCode || "N/A"}
                                                 </div>
                                             </div>
 

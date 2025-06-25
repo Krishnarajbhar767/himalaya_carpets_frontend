@@ -2,54 +2,52 @@ import { Sparkles, Scissors, Award, Leaf, Zap, Gift } from "lucide-react";
 
 /**
  * ProductFeatures Component
- * Displays key product features with icons and descriptions
+ * Displays generic key features for all carpet products
  */
-function ProductFeatures({ product }) {
+function ProductFeatures() {
     const features = [
         {
             icon: Sparkles,
-            title: "Premium Quality Fabric",
-            description: `Made from the finest ${
-                product?.fabric || "fabric"
-            } sourced from traditional artisans, ensuring exceptional comfort and durability.`,
+            title: "Premium Quality",
+            description:
+                "Our carpets are crafted from top-grade materials to ensure durability and a luxurious feel.",
         },
         {
             icon: Scissors,
-            title: "Expert Craftsmanship",
+            title: "Skilled Craftsmanship",
             description:
-                "Each piece is meticulously crafted by skilled artisans with decades of experience in traditional techniques.",
+                "Handmade by experienced artisans using traditional weaving techniques for exceptional artistry.",
         },
         {
             icon: Award,
-            title: "Authentic Design",
-            description: `Features authentic ${
-                product?.technique || "traditional"
-            } designs that celebrate cultural heritage and timeless aesthetics.`,
+            title: "Timeless Design",
+            description:
+                "Featuring classic and contemporary patterns that enhance any interior décor.",
         },
         {
             icon: Leaf,
-            title: "Eco-Friendly",
+            title: "Eco-Friendly Materials",
             description:
-                "Produced using sustainable practices that minimize environmental impact and support ethical manufacturing.",
+                "Produced with sustainable practices and eco-conscious materials to minimize environmental impact.",
         },
         {
             icon: Zap,
-            title: "Versatile Styling",
+            title: "Versatile Use",
             description:
-                "Perfect for both traditional occasions and contemporary settings, offering versatile styling options.",
+                "Suitable for living rooms, bedrooms, offices, and outdoor spaces, adapting to diverse settings.",
         },
         {
             icon: Gift,
-            title: "Gift-Ready Packaging",
+            title: "Perfect Gift",
             description:
-                "Comes in elegant packaging, making it a perfect gift for special occasions and celebrations.",
+                "Elegantly packaged, making our carpets an ideal gift for housewarmings and special occasions.",
         },
     ];
 
     return (
         <div className="bg-white rounded-lg overflow-hidden mb-8 p-6 lg:p-8">
             <h2 className="text-2xl font-semibold text-foreground mb-6">
-                Product Features
+                Features
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {features.map((feature, index) => (

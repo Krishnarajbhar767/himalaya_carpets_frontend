@@ -14,18 +14,18 @@ function SuggestedProducts({ products = [] }) {
                 </h2>
                 {products.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {products.map((product) => (
+                        {products.map((prod) => (
                             <div
-                                key={product._id}
+                                key={prod._id}
                                 className="group overflow-hidden hover:shadow-md transition-shadow"
                             >
                                 <div className="aspect-square bg-gray-50 overflow-hidden">
                                     <img
                                         src={
-                                            product.images?.[0] ||
+                                            prod.images?.[0] ||
                                             "/placeholder.svg?height=300&width=300"
                                         }
-                                        alt={product.name}
+                                        alt={prod.name}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 object-top"
                                         onError={(e) =>
                                             (e.target.src =
@@ -35,15 +35,19 @@ function SuggestedProducts({ products = [] }) {
                                 </div>
                                 <div className="p-4 space-y-2">
                                     <h4 className="font-medium text-foreground line-clamp-2">
-                                        {product.name}
+                                        {prod.name}
                                     </h4>
                                     <p className="text-lg font-bold text-foreground">
-                                        ₹
-                                        {product.price?.toLocaleString() ||
-                                            "N/A"}
+                                        ₹{prod.price?.toLocaleString() || "N/A"}
                                     </p>
                                     <Link
-                                        to={`/product/${product._id}`}
+                                        to={`/products/${slugify(
+                                            prod.category?.name || "",
+                                            {
+                                                lower: true,
+                                                strict: true,
+                                            }
+                                        )}/${prod.category?._id}/${prod._id}`}
                                         className="block w-full text-center bg-foreground text-white py-2 px-4 rounded-lg hover:bg-foreground/90 transition-colors text-sm font-medium"
                                     >
                                         View Details

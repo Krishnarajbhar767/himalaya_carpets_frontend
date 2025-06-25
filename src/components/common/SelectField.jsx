@@ -11,7 +11,7 @@ const SelectField = ({
     readOnly = false,
 }) => {
     const [isFocused, setIsFocused] = useState(false);
-    const [hasValue, setHasValue] = useState(value);
+    const [hasValue, setHasValue] = useState(false);
     const selectRef = useRef(null);
 
     const handleFocus = () => setIsFocused(true);
@@ -19,12 +19,17 @@ const SelectField = ({
     const handleBlur = (e) => {
         setIsFocused(false);
         setHasValue(e.target.value !== "");
+        if (rules.onBlur) rules.onBlur(e); // Preserve rule handler
     };
 
     useEffect(() => {
-        if (selectRef.current) {
-            setHasValue(selectRef.current.value !== "");
-        }
+        // Delay to let react-hook-form populate value
+        const timeout = setTimeout(() => {
+            if (selectRef.current && selectRef.current.value !== "") {
+                setHasValue(true);
+            }
+        }, 50);
+        return () => clearTimeout(timeout);
     }, []);
 
     return (
@@ -32,10 +37,7 @@ const SelectField = ({
             <select
                 {...register(name, {
                     ...rules,
-                    onBlur: (e) => {
-                        handleBlur(e);
-                        if (rules.onBlur) rules.onBlur(e);
-                    },
+                    onBlur: handleBlur,
                 })}
                 ref={(e) => {
                     register(name, rules).ref(e);
@@ -44,24 +46,20 @@ const SelectField = ({
                 id={name}
                 name={name}
                 onFocus={handleFocus}
-                onBlur={handleBlur}
                 className="w-full p-3 py-4 border-[2px] border-foreground/50 focus:outline-none focus:border-foreground text-foreground bg-white appearance-none transition-all duration-100 ease-linear capitalize"
                 defaultValue={value}
                 disabled={readOnly}
             >
                 <option value="" disabled hidden></option>
-                {options.map((opt, idx) => {
-                    if (opt?.label === "all") {
-                        return;
-                    }
+                {options.map((opt) => {
+                    if (opt?.label?.toLowerCase() === "all") return null;
                     return (
                         <option
                             key={opt.value}
-                            value={opt?.value}
+                            value={opt.value}
                             className="capitalize text-foreground"
                         >
-                            {console.log(opt)}
-                            {opt?.label}
+                            {opt.label}
                         </option>
                     );
                 })}

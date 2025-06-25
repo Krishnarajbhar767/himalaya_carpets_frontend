@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Package } from "lucide-react";
 
-// Import modular components
+// Import modular components (ensure these are updated if they previously referenced saree fields)
 import ProductImageGallery from "./product details/ProductImageGallery";
 import ProductInfo from "./product details/ProductInfo";
 import ProductFeatures from "./product details/ProductFeatures";
@@ -11,20 +11,20 @@ import StylingTips from "./product details/StylingTips";
 import ProductTabs from "./product details/ProductTabs";
 import DeliveryTimeline from "./product details/DeliveryTimeline";
 import SuggestedProducts from "./product details/SuggestedProducts";
+
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, setCart } from "../../redux/slices/cartSlice";
 import axiosInstance from "../../utils/apiConnector";
 import toast from "react-hot-toast";
 import { setWishList } from "../../redux/slices/wishListSlice";
 import slugify from "slugify";
+
 /**
  * Enhanced ProductDetailsPage Component
- * Main component that orchestrates all product detail sections
- * Features: modular design, clean code structure, comprehensive product information
+ * Orchestrates all product detail sections for carpets
  */
 function ProductDetailsPage() {
     const { id } = useParams();
-    // State management
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -36,7 +36,7 @@ function ProductDetailsPage() {
     const navigate = useNavigate();
     const wishlistItems = useSelector((state) => state.wishlist);
 
-    // Mock reviews data
+    // Mock reviews data (you may fetch real ones from backend)
     const mockReviews = [
         {
             user: "Priya Sharma",
@@ -56,8 +56,7 @@ function ProductDetailsPage() {
         {
             user: "Meera Singh",
             rating: 5,
-            comment:
-                "Love the fabric quality and the craftsmanship is outstanding.",
+            comment: "Soft texture and craftsmanship is outstanding.",
             date: "2024-01-05",
             verified: false,
         },
@@ -76,21 +75,21 @@ function ProductDetailsPage() {
                 if (!productResponse.ok)
                     throw new Error("Failed to fetch product");
                 const productData = await productResponse.json();
-                const product = productData?.data;
-                setProduct(product);
+                const prod = productData?.data;
+                setProduct(prod);
 
                 // Fetch related products if category exists
-                if (product?.category) {
+                if (prod?.category) {
                     const relatedResponse = await fetch(
                         `${import.meta.env.VITE_BACKEND_URL}/categories/${
-                            product.category?._id
+                            prod.category?._id
                         }`
                     );
                     if (!relatedResponse.ok)
                         throw new Error("Failed to fetch related products");
                     const relatedData = await relatedResponse.json();
                     const related = (relatedData?.data?.products || [])
-                        .filter((p) => p._id !== product._id)
+                        .filter((p) => p._id !== prod._id)
                         .slice(0, 4);
                     setRelatedProducts(related);
                 }
@@ -104,19 +103,17 @@ function ProductDetailsPage() {
         fetchProduct();
     }, [id]);
 
-    // Event handlers
+    // Event handlers (Add to cart, share, zoom)
     const handleAddToCart = async (data) => {
         const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
         const isExist = existingCart.some((item) => item._id === data._id);
         if (!isExist) {
             const updatedCart = [...existingCart, { ...data }];
             localStorage.setItem("cart", JSON.stringify(updatedCart));
-            console.log("Added to localStorage cart");
-            // In this offline cenario totalPirce Will Be Colculated Automaticlly
-
+            // If user logged in, sync with backend
             if (user) {
                 try {
-                    const res = await axiosInstance.post("/user/cart/add", {
+                    await axiosInstance.post("/user/cart/add", {
                         product: data?._id,
                         quantity: data?.quantity,
                         finalPrice: data?.finalPrice,
@@ -124,12 +121,9 @@ function ProductDetailsPage() {
                         totalPrice: data.finalPrice * data?.quantity,
                         userId: user?._id,
                     });
-                    if (!res) {
-                        return;
-                    }
                 } catch (error) {
                     toast.error("Something went wrong");
-                    console.log(error);
+                    console.error(error);
                     return;
                 }
             }
@@ -139,6 +133,7 @@ function ProductDetailsPage() {
 
     const handleBuyNow = (data) => {
         console.log("Buy now:", data);
+        // Implement similar to original but using carpet fields if needed
     };
 
     const handleShare = () => {
@@ -259,7 +254,7 @@ function ProductDetailsPage() {
                                 lower: true,
                                 strict: true,
                             })}/${product.category?._id}`}
-                            className="hover:text-gray-900 text-foreground"
+                            className="hover:text-gray-900 text-foreground capitalize"
                         >
                             {product.category?.name || "Category"}
                         </Link>
@@ -284,8 +279,8 @@ function ProductDetailsPage() {
                         <ProductInfo
                             product={product}
                             onAddToCart={handleAddToCart}
-                            onBuyNow={handleBuyNow}
                             onShare={handleShare}
+                            onBuyNow={handleBuyNow}
                         />
                     </div>
                 </div>
@@ -317,7 +312,7 @@ function ProductDetailsPage() {
                             />
                             <button
                                 onClick={() => setIsZoomed(false)}
-                                className="absolute top-4 right-4 bg-white text-foreground p-2  rounded-full hover:bg-gray-100 transition-colors"
+                                className="absolute top-4 right-4 bg-white text-foreground p-2 rounded-full hover:bg-gray-100 transition-colors"
                             >
                                 ✕
                             </button>

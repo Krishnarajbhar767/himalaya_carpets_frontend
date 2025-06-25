@@ -1,7 +1,6 @@
-"use client";
-
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import emailjs from "@emailjs/browser";
 
 const ContactUs = () => {
     const [formData, setFormData] = useState({
@@ -12,7 +11,17 @@ const ContactUs = () => {
         message: "",
     });
 
+    const [isSending, setIsSending] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [sendResult, setSendResult] = useState(null); // { success: boolean, message: string }
+
+    // Initialize EmailJS (optional; you can also pass public key directly in send)
+    useEffect(() => {
+        const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+        if (publicKey) {
+            emailjs.init(publicKey);
+        }
+    }, []);
 
     const handleInputChange = (e) => {
         setFormData({
@@ -21,12 +30,78 @@ const ContactUs = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Add your form submission logic here
-        console.log("Form submitted:", formData);
-        setIsSubmitted(true);
-        setTimeout(() => setIsSubmitted(false), 3000);
+
+        // Basic validation: ensure required fields are filled
+        if (
+            !formData.name ||
+            !formData.email ||
+            !formData.subject ||
+            !formData.message
+        ) {
+            setSendResult({
+                success: false,
+                message: "Please fill in all required fields.",
+            });
+            return;
+        }
+
+        setIsSending(true);
+        setSendResult(null);
+
+        const serviceID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+        const templateID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+        const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+        // Prepare template parameters matching your EmailJS template variables
+        const templateParams = {
+            from_name: formData.name,
+            from_email: formData.email,
+            phone: formData.phone,
+            subject: formData.subject,
+            message: formData.message,
+            // Optionally add page URL or timestamp:
+            page_url: window.location.href,
+            // current_year: new Date().getFullYear(), // if your template uses it
+        };
+
+        try {
+            // Use emailjs.send (since we have data in state) instead of sendForm
+            const response = await emailjs.send(
+                serviceID,
+                templateID,
+                templateParams,
+                publicKey
+            );
+            console.log("EmailJS success:", response.status, response.text);
+            setSendResult({
+                success: true,
+                message: "Message sent successfully!",
+            });
+            setIsSubmitted(true);
+            // Reset form fields
+            setFormData({
+                name: "",
+                email: "",
+                phone: "",
+                subject: "",
+                message: "",
+            });
+            // Optionally hide “Message Sent!” after a timeout
+            setTimeout(() => {
+                setIsSubmitted(false);
+                setSendResult(null);
+            }, 5000);
+        } catch (error) {
+            console.error("EmailJS error:", error);
+            setSendResult({
+                success: false,
+                message: "Failed to send message. Please try again later.",
+            });
+        } finally {
+            setIsSending(false);
+        }
     };
 
     const contactInfo = [
@@ -34,20 +109,23 @@ const ContactUs = () => {
             icon: MapPin,
             title: "Address",
             details: [
-                "123 Textile Street",
-                "Fashion District",
-                "Mumbai, Maharashtra 400001",
+                "HIG II, Plot 5-12, Jamunipur Colony",
+                "BHADOHI-221401, U.P. INDIA",
             ],
         },
         {
             icon: Phone,
-            title: "Phone",
-            details: ["+91 98765 43210", "+91 87654 32109"],
+            title: "Sales Contact",
+            details: [
+                "Mr. Sandeep Jaiswal: +91-9335723032",
+                "Mr. Suryansh Jaiswal: +91-7007596907",
+                "Head Office Contact: Ms. Varnika Jaiswal: +91-9918022212",
+            ],
         },
         {
             icon: Mail,
             title: "Email",
-            details: ["info@srijanfabrics.com", "support@srijanfabrics.com"],
+            details: ["carpetshimalaya@gmail.com"],
         },
         {
             icon: Clock,
@@ -173,19 +251,19 @@ const ContactUs = () => {
                                         <option value="">
                                             Select a subject
                                         </option>
-                                        <option value="general">
+                                        <option value="General Inquiry">
                                             General Inquiry
                                         </option>
-                                        <option value="support">
+                                        <option value="Customer Support">
                                             Customer Support
                                         </option>
-                                        <option value="business">
+                                        <option value="Business Partnership">
                                             Business Partnership
                                         </option>
-                                        <option value="feedback">
+                                        <option value="Feedback">
                                             Feedback
                                         </option>
-                                        <option value="other">Other</option>
+                                        <option value="Other">Other</option>
                                     </select>
                                 </div>
                             </div>
@@ -205,12 +283,28 @@ const ContactUs = () => {
                                 />
                             </div>
 
+                            {sendResult && (
+                                <p
+                                    className={`mb-4 text-sm ${
+                                        sendResult.success
+                                            ? "text-green-600"
+                                            : "text-red-600"
+                                    }`}
+                                >
+                                    {sendResult.message}
+                                </p>
+                            )}
+
                             <button
                                 type="submit"
-                                disabled={isSubmitted}
-                                className="w-full bg-[rgb(83,62,45)] text-white py-2 px-4 font-medium disabled:bg-gray-400"
+                                disabled={isSending || isSubmitted}
+                                className="w-full bg-[rgb(83,62,45)] text-white py-2 px-4 font-medium disabled:bg-gray-400 transition"
                             >
-                                {isSubmitted ? "Message Sent!" : "Send Message"}
+                                {isSending
+                                    ? "Sending..."
+                                    : isSubmitted
+                                    ? "Message Sent!"
+                                    : "Send Message"}
                             </button>
                         </form>
                     </div>
@@ -223,13 +317,14 @@ const ContactUs = () => {
                     <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-6 text-center">
                         Find Us
                     </h2>
-                    <div className="max-w-4xl mx-auto h-64 bg-gray-200 flex items-center justify-center">
-                        <div className="text-center">
-                            <MapPin className="w-8 h-8 text-foreground mx-auto mb-2" />
-                            <p className="text-foreground">
-                                Map would be displayed here
-                            </p>
-                        </div>
+                    <div className="max-w-4xl mx-auto h-84 bg-gray-200 flex items-center justify-center">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3604.6006584085976!2d82.59422917438361!3d25.384697024082673!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398fde78ffef9bd1%3A0x330b0009b0b2fc26!2sHimalaya%20Concepts!5e0!3m2!1sen!2sin!4v1750658104862!5m2!1sen!2sin"
+                            allowFullScreen=""
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                            className="w-full h-full"
+                        ></iframe>
                     </div>
                 </div>
             </section>
@@ -240,7 +335,6 @@ const ContactUs = () => {
                     <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-6 text-center">
                         Frequently Asked Questions
                     </h2>
-
                     <div className="max-w-3xl mx-auto space-y-4">
                         {[
                             {
@@ -248,7 +342,7 @@ const ContactUs = () => {
                                 answer: "We offer standard shipping (7-10 days) and express shipping (3-5 days) across India. International shipping is available to select countries.",
                             },
                             {
-                                question: "Do you offer custom fabric orders?",
+                                question: "Do you offer custom carpet orders?",
                                 answer: "Yes, we specialize in custom orders. Contact our design team to discuss your requirements and get a personalized quote.",
                             },
                             {
@@ -287,6 +381,7 @@ const ContactUs = () => {
                     <div className="flex justify-center space-x-4">
                         <a href="#" className="bg-white p-2">
                             <span className="sr-only">Facebook</span>
+                            {/* Facebook SVG */}
                             <svg
                                 className="w-6 h-6 text-[rgb(83,62,45)]"
                                 fill="currentColor"
@@ -300,8 +395,12 @@ const ContactUs = () => {
                                 />
                             </svg>
                         </a>
-                        <a href="#" className="bg-white p-2">
+                        <a
+                            href="https://www.instagram.com/himalaya.carpets/"
+                            className="bg-white p-2"
+                        >
                             <span className="sr-only">Instagram</span>
+                            {/* Instagram SVG */}
                             <svg
                                 className="w-6 h-6 text-[rgb(83,62,45)]"
                                 fill="currentColor"
@@ -317,6 +416,7 @@ const ContactUs = () => {
                         </a>
                         <a href="#" className="bg-white p-2">
                             <span className="sr-only">Twitter</span>
+                            {/* Twitter SVG */}
                             <svg
                                 className="w-6 h-6 text-[rgb(83,62,45)]"
                                 fill="currentColor"

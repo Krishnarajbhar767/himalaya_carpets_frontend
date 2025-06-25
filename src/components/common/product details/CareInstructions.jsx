@@ -2,32 +2,37 @@ import { Check } from "lucide-react";
 
 /**
  * CareInstructions Component
- * Displays product care and maintenance instructions
+ * Displays carpet care and maintenance instructions
  */
 function CareInstructions() {
     const careCategories = [
         {
-            title: "Washing",
+            title: "Regular Maintenance",
             instructions: [
-                "Dry clean only for best results",
-                "If hand washing, use cold water with mild detergent",
-                "Do not soak for extended periods",
+                "Vacuum regularly to remove dust and prevent fiber matting.",
+                "Rotate the carpet every 3–6 months for even wear.",
             ],
         },
         {
-            title: "Drying & Ironing",
+            title: "Spot Cleaning",
             instructions: [
-                "Air dry in shade, away from direct sunlight",
-                "Iron on medium heat with a cloth barrier",
-                "Steam ironing recommended for best results",
+                "Blot spills immediately with a clean, dry cloth. Avoid rubbing.",
+                "Use a mild detergent solution (test on a small area first).",
+                "Avoid excessive moisture; do not soak the backing.",
             ],
         },
         {
-            title: "Storage",
+            title: "Deep Cleaning",
             instructions: [
-                "Store folded in a cool, dry place",
-                "Use acid-free tissue paper between folds",
-                "Avoid hanging for long periods to maintain shape",
+                "Professional cleaning recommended every 12–18 months.",
+                "Use dry-clean or low-moisture cleaning methods to protect fibers.",
+            ],
+        },
+        {
+            title: "Sunlight & Moisture",
+            instructions: [
+                "Avoid direct prolonged sunlight to prevent color fading.",
+                "Keep away from damp areas; ensure proper room ventilation.",
             ],
         },
     ];
@@ -37,7 +42,7 @@ function CareInstructions() {
             <h2 className="text-2xl font-bold text-foreground mb-6">
                 Care Instructions
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {careCategories.map((category, index) => (
                     <div key={index} className="p-5 bg-foreground/5 rounded-sm">
                         <h3 className="font-semibold text-lg text-foreground mb-3">

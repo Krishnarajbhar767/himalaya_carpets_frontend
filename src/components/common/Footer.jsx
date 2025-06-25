@@ -11,6 +11,7 @@ import {
 import axiosInstance from "../../utils/apiConnector";
 import toast from "react-hot-toast";
 import { handleAxiosError } from "../../utils/handleAxiosError";
+import LOGO from "../../assets/images/logo/HIMALAYA CARPET WHITE.png";
 
 const primaryColor = "rgb(83, 62, 45)";
 
@@ -44,17 +45,7 @@ const Footer = () => {
                     {/* ─ Logo and Contact Info ─ */}
                     <div>
                         <div className="flex items-center mb-6">
-                            <div
-                                className="text-2xl font-bold"
-                                style={{ color: primaryColor }}
-                            >
-                                Sr
-                                <span className="relative">
-                                    Ij
-                                    <span className="absolute -right-1 -top-1 w-3 h-3 bg-red-500 rounded-full"></span>
-                                </span>
-                                A<span className="relative">N</span>
-                            </div>
+                            <img src={LOGO} className="h-[80px] w-[80px]" />
                         </div>
 
                         <p
@@ -258,7 +249,7 @@ const Footer = () => {
                                 style={{ color: primaryColor }}
                                 className="text-sm"
                             >
-                                ©2025 Srijan Fabrics
+                                ©2025 Himalaya Carpets
                             </p>
                         </div>
 

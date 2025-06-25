@@ -1,28 +1,36 @@
-"use client";
-
 import { useState } from "react";
 import { ChevronDown, ChevronUp, X, Filter, RotateCcw } from "lucide-react";
 
-// Enhanced SidebarFilter Component with premium UI and better mobile experience
+// Enhanced SidebarFilter Component for Carpet schema filters
 function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
+    // Default price range; adjust max as needed
     const [priceRange, setPriceRange] = useState([0, 200000]);
-    const [fabric, setFabric] = useState("");
+    const [material, setMaterial] = useState("");
+    const [weaving, setWeaving] = useState("");
+    const [texture, setTexture] = useState("");
+    const [size, setSize] = useState("");
+    const [style, setStyle] = useState("");
     const [color, setColor] = useState("");
-    const [technique, setTechnique] = useState("");
 
     const [openSections, setOpenSections] = useState({
         price: true,
-        fabric: true,
+        material: true,
+        weaving: true,
+        texture: true,
+        size: true,
+        style: true,
         color: true,
-        technique: true,
     });
 
     // Calculate active filter count
     const activeFilters = [
         priceRange[0] !== 0 || priceRange[1] !== 200000,
-        fabric !== "",
+        material !== "",
+        weaving !== "",
+        texture !== "",
+        size !== "",
+        style !== "",
         color !== "",
-        technique !== "",
     ].filter(Boolean).length;
 
     // Toggle accordion section
@@ -32,21 +40,35 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
 
     // Handle applying filters
     const handleApplyFilters = () => {
-        onFilterChange({ priceRange, fabric, color, technique });
+        onFilterChange({
+            priceRange,
+            material,
+            weaving,
+            texture,
+            size,
+            style,
+            color,
+        });
         if (isOpen && toggleSidebar) toggleSidebar();
     };
 
     // Handle clearing filters
     const handleClearFilters = () => {
         setPriceRange([0, 200000]);
-        setFabric("");
+        setMaterial("");
+        setWeaving("");
+        setTexture("");
+        setSize("");
+        setStyle("");
         setColor("");
-        setTechnique("");
         onFilterChange({
             priceRange: [0, 200000],
-            fabric: "",
+            material: "",
+            weaving: "",
+            texture: "",
+            size: "",
+            style: "",
             color: "",
-            technique: "",
         });
     };
 
@@ -66,6 +88,50 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
             {isOpen && <div className="p-4 bg-white">{children}</div>}
         </div>
     );
+
+    // Sample options for carpets; adjust as needed or fetch dynamically
+    const materialOptions = [
+        "All Materials",
+        "100% Jute",
+        "Wool",
+        "Synthetic",
+        "Cotton",
+    ];
+    const weavingOptions = [
+        "All Weaving",
+        "Hand Knotted",
+        "Hand Tufted",
+        "Handloom",
+        "Flatweave",
+        "Dhurrie",
+    ];
+    const textureOptions = ["All Textures", "Soft", "Medium", "Rough"];
+    const sizeOptions = [
+        "All Sizes",
+        "3x5 ft",
+        "4x6 ft",
+        "5x8 ft",
+        "6x9 ft",
+        "8x10 ft",
+    ];
+    const styleOptions = [
+        "All Styles",
+        "Modern",
+        "Persian",
+        "Traditional",
+        "Contemporary",
+    ];
+    const colorOptions = [
+        "All Colors",
+        "Beige",
+        "Gray",
+        "Black",
+        "White",
+        "Red",
+        "Blue",
+        "Green",
+        "Yellow",
+    ];
 
     return (
         <>
@@ -146,7 +212,7 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
                                             ])
                                         }
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-foreground focus:border-transparent text-sm transition-all duration-200"
-                                        placeholder="₹10,000"
+                                        placeholder="₹200,000"
                                     />
                                 </div>
                             </div>
@@ -190,46 +256,169 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
                         </div>
                     </FilterSection>
 
-                    {/* Fabric Filter */}
+                    {/* Material Filter */}
                     <FilterSection
-                        title="Fabric"
-                        isOpen={openSections.fabric}
-                        onToggle={() => toggleSection("fabric")}
+                        title="Material"
+                        isOpen={openSections.material}
+                        onToggle={() => toggleSection("material")}
                     >
                         <div className="space-y-2">
-                            {[
-                                "All Fabrics",
-                                "Silk",
-                                "Cotton",
-                                "Georgette",
-                                "Chiffon",
-                                "Linen",
-                            ].map((fabricOption) => (
+                            {materialOptions.map((opt) => (
                                 <label
-                                    key={fabricOption}
+                                    key={opt}
                                     className="flex items-center space-x-3 cursor-pointer"
                                 >
                                     <input
                                         type="radio"
-                                        name="fabric"
+                                        name="material"
                                         value={
-                                            fabricOption === "All Fabrics"
-                                                ? ""
-                                                : fabricOption
+                                            opt === "All Materials" ? "" : opt
                                         }
                                         checked={
-                                            fabric ===
-                                            (fabricOption === "All Fabrics"
-                                                ? ""
-                                                : fabricOption)
+                                            material ===
+                                            (opt === "All Materials" ? "" : opt)
                                         }
                                         onChange={(e) =>
-                                            setFabric(e.target.value)
+                                            setMaterial(e.target.value)
                                         }
                                         className="w-4 h-4 text-foreground border-gray-300 focus:ring-foreground"
                                     />
                                     <span className="text-sm text-foreground">
-                                        {fabricOption}
+                                        {opt}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </FilterSection>
+
+                    {/* Weaving Filter */}
+                    <FilterSection
+                        title="Weaving"
+                        isOpen={openSections.weaving}
+                        onToggle={() => toggleSection("weaving")}
+                    >
+                        <div className="space-y-2">
+                            {weavingOptions.map((opt) => (
+                                <label
+                                    key={opt}
+                                    className="flex items-center space-x-3 cursor-pointer"
+                                >
+                                    <input
+                                        type="radio"
+                                        name="weaving"
+                                        value={opt === "All Weaving" ? "" : opt}
+                                        checked={
+                                            weaving ===
+                                            (opt === "All Weaving" ? "" : opt)
+                                        }
+                                        onChange={(e) =>
+                                            setWeaving(e.target.value)
+                                        }
+                                        className="w-4 h-4 text-foreground border-gray-300 focus:ring-foreground"
+                                    />
+                                    <span className="text-sm text-foreground">
+                                        {opt}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </FilterSection>
+
+                    {/* Texture Filter */}
+                    <FilterSection
+                        title="Texture"
+                        isOpen={openSections.texture}
+                        onToggle={() => toggleSection("texture")}
+                    >
+                        <div className="space-y-2">
+                            {textureOptions.map((opt) => (
+                                <label
+                                    key={opt}
+                                    className="flex items-center space-x-3 cursor-pointer"
+                                >
+                                    <input
+                                        type="radio"
+                                        name="texture"
+                                        value={
+                                            opt === "All Textures" ? "" : opt
+                                        }
+                                        checked={
+                                            texture ===
+                                            (opt === "All Textures" ? "" : opt)
+                                        }
+                                        onChange={(e) =>
+                                            setTexture(e.target.value)
+                                        }
+                                        className="w-4 h-4 text-foreground border-gray-300 focus:ring-foreground"
+                                    />
+                                    <span className="text-sm text-foreground">
+                                        {opt}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </FilterSection>
+
+                    {/* Size Filter */}
+                    <FilterSection
+                        title="Size"
+                        isOpen={openSections.size}
+                        onToggle={() => toggleSection("size")}
+                    >
+                        <div className="space-y-2">
+                            {sizeOptions.map((opt) => (
+                                <label
+                                    key={opt}
+                                    className="flex items-center space-x-3 cursor-pointer"
+                                >
+                                    <input
+                                        type="radio"
+                                        name="size"
+                                        value={opt === "All Sizes" ? "" : opt}
+                                        checked={
+                                            size ===
+                                            (opt === "All Sizes" ? "" : opt)
+                                        }
+                                        onChange={(e) =>
+                                            setSize(e.target.value)
+                                        }
+                                        className="w-4 h-4 text-foreground border-gray-300 focus:ring-foreground"
+                                    />
+                                    <span className="text-sm text-foreground">
+                                        {opt}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </FilterSection>
+
+                    {/* Style Filter */}
+                    <FilterSection
+                        title="Style"
+                        isOpen={openSections.style}
+                        onToggle={() => toggleSection("style")}
+                    >
+                        <div className="space-y-2">
+                            {styleOptions.map((opt) => (
+                                <label
+                                    key={opt}
+                                    className="flex items-center space-x-3 cursor-pointer"
+                                >
+                                    <input
+                                        type="radio"
+                                        name="style"
+                                        value={opt === "All Styles" ? "" : opt}
+                                        checked={
+                                            style ===
+                                            (opt === "All Styles" ? "" : opt)
+                                        }
+                                        onChange={(e) =>
+                                            setStyle(e.target.value)
+                                        }
+                                        className="w-4 h-4 text-foreground border-gray-300 focus:ring-foreground"
+                                    />
+                                    <span className="text-sm text-foreground">
+                                        {opt}
                                     </span>
                                 </label>
                             ))}
@@ -243,33 +432,18 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
                         onToggle={() => toggleSection("color")}
                     >
                         <div className="space-y-2">
-                            {[
-                                "All Colors",
-                                "Black",
-                                "White",
-                                "Red",
-                                "Blue",
-                                "Green",
-                                "Yellow",
-                                "Pink",
-                            ].map((colorOption) => (
+                            {colorOptions.map((opt) => (
                                 <label
-                                    key={colorOption}
+                                    key={opt}
                                     className="flex items-center space-x-3 cursor-pointer"
                                 >
                                     <input
                                         type="radio"
                                         name="color"
-                                        value={
-                                            colorOption === "All Colors"
-                                                ? ""
-                                                : colorOption
-                                        }
+                                        value={opt === "All Colors" ? "" : opt}
                                         checked={
                                             color ===
-                                            (colorOption === "All Colors"
-                                                ? ""
-                                                : colorOption)
+                                            (opt === "All Colors" ? "" : opt)
                                         }
                                         onChange={(e) =>
                                             setColor(e.target.value)
@@ -277,66 +451,19 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
                                         className="w-4 h-4 text-foreground border-gray-300 focus:ring-foreground"
                                     />
                                     <div className="flex items-center gap-2">
-                                        {colorOption !== "All Colors" && (
+                                        {opt !== "All Colors" && (
                                             <div
                                                 className="w-4 h-4 rounded-full border border-gray-300"
                                                 style={{
                                                     backgroundColor:
-                                                        colorOption.toLowerCase(),
+                                                        opt.toLowerCase(),
                                                 }}
                                             />
                                         )}
-                                        <span className="text-sm text-gray-700">
-                                            {colorOption}
+                                        <span className="text-sm text-foreground">
+                                            {opt}
                                         </span>
                                     </div>
-                                </label>
-                            ))}
-                        </div>
-                    </FilterSection>
-
-                    {/* Technique Filter */}
-                    <FilterSection
-                        title="Technique"
-                        isOpen={openSections.technique}
-                        onToggle={() => toggleSection("technique")}
-                    >
-                        <div className="space-y-2">
-                            {[
-                                "All Techniques",
-                                "Handwoven",
-                                "Embroidered",
-                                "Printed",
-                                "Block Print",
-                                "Digital Print",
-                            ].map((techniqueOption) => (
-                                <label
-                                    key={techniqueOption}
-                                    className="flex items-center space-x-3 cursor-pointer"
-                                >
-                                    <input
-                                        type="radio"
-                                        name="technique"
-                                        value={
-                                            techniqueOption === "All Techniques"
-                                                ? ""
-                                                : techniqueOption
-                                        }
-                                        checked={
-                                            technique ===
-                                            (techniqueOption ===
-                                            "All Techniques"
-                                                ? ""
-                                                : techniqueOption)
-                                        }
-                                        onChange={(e) =>
-                                            setTechnique(e.target.value)
-                                        }
-                                        className="w-4 h-4 text-foreground border-gray-300 focus:ring-foreground"
-                                    />
-                                    <span className="text-sm text-gray-700">
-                                        {techniqueOption}
-                                    </span>
                                 </label>
                             ))}
                         </div>

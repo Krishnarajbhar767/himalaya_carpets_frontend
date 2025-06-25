@@ -46,13 +46,13 @@ function ProductImageGallery({ images = [], productName = "", onZoom }) {
                             }`}
                         >
                             <img
-                                src={image || "/placeholder.svg"}
+                                src={image || "/product_placeholder.webp"}
                                 alt={`${productName} thumbnail ${index + 1}`}
                                 className="w-full h-full object-cover object-top"
-                                onError={(e) =>
-                                    (e.target.src =
-                                        "/placeholder.svg?height=80&width=80")
-                                }
+                                // onError={(e) =>
+                                //     (e.target.src =
+                                //         "/placeholder.svg?height=80&width=80")
+                                // }
                             />
                         </button>
                     ))}
@@ -63,13 +63,13 @@ function ProductImageGallery({ images = [], productName = "", onZoom }) {
             <div className="order-1 md:order-2 flex-1 relative group">
                 <div className="h-[700px] overflow-hidden  bg-gray-50 ">
                     <img
-                        src={selectedImage || "/placeholder.svg"}
+                        src={selectedImage || "/product_placeholder.webp"}
                         alt={productName}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 object-top"
-                        onError={(e) =>
-                            (e.target.src =
-                                "/placeholder.svg?height=600&width=600")
-                        }
+                        // onError={(e) =>
+                        //     (e.target.src =
+                        //         "/placeholder.svg?height=600&width=600")
+                        // }
                     />
 
                     {/* Navigation Arrows */}

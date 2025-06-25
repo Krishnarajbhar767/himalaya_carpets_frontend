@@ -27,38 +27,60 @@ const EditProduct = () => {
         watch,
     } = useForm();
 
-    const [imageFiles, setImageFiles] = useState([]);
-    const [imagePreviews, setImagePreviews] = useState([]);
+    const [existingImages, setExistingImages] = useState([]);
+    const [newImageFiles, setNewImageFiles] = useState([]);
+    const [newImagePreviews, setNewImagePreviews] = useState([]);
     const [initialData, setInitialData] = useState(null);
 
     const watchedFields = watch();
     const dispatch = useDispatch();
+
     useEffect(() => {
         if (product) {
             const init = {
                 name: product.name,
                 description: product.description,
                 price: product.price,
-                stock: product.stock,
+                psft: product.psft,
                 category: product.category._id || product.category,
-                fabric: product.fabric,
-                technique: product.technique,
+                stock: product.stock,
+                material: product.material,
+                weaving: product.weaving,
+                texture: product.texture,
+                pileThickness: product.pileThickness,
+                size: product.size,
                 color: product.color,
                 weight: product.weight,
                 assurance: product.assurance,
                 hsnCode: product.hsnCode,
+                style: product.style,
             };
             reset(init);
             setInitialData(init);
-            setImagePreviews(product.images || []);
+            setExistingImages(product.images || []);
         }
     }, [product, reset]);
 
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
-        setImageFiles(files);
         const previews = files.map((file) => URL.createObjectURL(file));
-        setImagePreviews((prev) => [...prev, ...previews]);
+        setNewImageFiles((prev) => [...prev, ...files]);
+        setNewImagePreviews((prev) => [...prev, ...previews]);
+    };
+
+    const removeExistingImage = (index) => {
+        const updated = [...existingImages];
+        updated.splice(index, 1);
+        setExistingImages(updated);
+    };
+
+    const removeNewImage = (index) => {
+        const files = [...newImageFiles];
+        const previews = [...newImagePreviews];
+        files.splice(index, 1);
+        previews.splice(index, 1);
+        setNewImageFiles(files);
+        setNewImagePreviews(previews);
     };
 
     const isFormChanged = () => {
@@ -68,7 +90,9 @@ const EditProduct = () => {
                 return true;
             }
         }
-        if (imageFiles.length > 0) return true;
+        if (newImageFiles.length > 0) return true;
+        if (existingImages.length !== (product?.images?.length || 0))
+            return true;
         return false;
     };
 
@@ -77,16 +101,16 @@ const EditProduct = () => {
             toast.error("No changes detected.");
             return;
         }
-        setIsSubmitting((prev) => true);
+        setIsSubmitting(true);
         const toastId = toast.loading("Please wait...");
         let uploadedImageUrls = [];
-        if (imageFiles.length > 0) {
+
+        if (newImageFiles.length > 0) {
             const formData = new FormData();
-            imageFiles.forEach((file) => formData.append("files", file));
+            newImageFiles.forEach((file) => formData.append("files", file));
 
             try {
                 const response = await uploadMedia(formData);
-
                 uploadedImageUrls = Array.isArray(response)
                     ? response
                     : [response];
@@ -96,7 +120,7 @@ const EditProduct = () => {
             }
         }
 
-        const finalImages = [...(product.images || []), ...uploadedImageUrls];
+        const finalImages = [...existingImages, ...uploadedImageUrls];
 
         const updatedData = {
             ...data,
@@ -104,7 +128,6 @@ const EditProduct = () => {
         };
 
         try {
-            console.log("Updated product data:", updatedData);
             const updatedProducts = await productApis.updateProduct(
                 updatedData,
                 id
@@ -116,7 +139,7 @@ const EditProduct = () => {
             toast.error("Failed to update product");
         } finally {
             toast.dismiss(toastId);
-            setIsSubmitting((prev) => false);
+            setIsSubmitting(false);
         }
     };
 
@@ -145,7 +168,6 @@ const EditProduct = () => {
                 <InputField
                     label="Name"
                     name="name"
-                    value={product?.name}
                     register={register}
                     errors={errors}
                     rules={{ required: "Product name is required" }}
@@ -153,43 +175,38 @@ const EditProduct = () => {
                 <InputField
                     label="Description"
                     name="description"
-                    value={product?.description}
                     register={register}
                     errors={errors}
                     rules={{ required: "Description is required" }}
                 />
-
+                <InputField
+                    label="₹/sqft"
+                    name="psft"
+                    register={register}
+                    errors={errors}
+                    rules={{ required: "psft is required" }}
+                />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Price"
                         name="price"
-                        value={product?.price}
                         type="number"
                         register={register}
                         errors={errors}
-                        rules={{
-                            required: "Price is required",
-                            min: { value: 0, message: "Must be positive" },
-                        }}
+                        rules={{ required: "Price is required" }}
                     />
                     <InputField
                         label="Stock"
                         name="stock"
-                        value={product?.stock}
                         type="number"
                         register={register}
                         errors={errors}
-                        rules={{
-                            required: "Stock is required",
-                            min: { value: 0, message: "Must be positive" },
-                        }}
+                        rules={{ required: "Stock is required" }}
                     />
                 </div>
-
                 <SelectField
                     label="Category"
                     name="category"
-                    value={product?.category}
                     register={register}
                     errors={errors}
                     rules={{ required: "Category is required" }}
@@ -210,62 +227,97 @@ const EditProduct = () => {
                         onChange={handleImageUpload}
                         className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800"
                     />
-                    {imagePreviews.length > 0 && (
-                        <div className="mt-2 flex flex-wrap gap-2">
-                            {imagePreviews.map((src, i) => (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                        {existingImages.map((src, i) => (
+                            <div key={i} className="relative w-36   h-36">
                                 <img
-                                    key={i}
                                     src={src}
-                                    alt={`Preview ${i}`}
-                                    className="w-16 h-16 object-cover rounded-md"
+                                    alt="img"
+                                    className="w-full h-full object-cover rounded"
                                 />
-                            ))}
-                        </div>
-                    )}
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <InputField
-                        label="Fabric"
-                        name="fabric"
-                        value={product?.fabric}
-                        register={register}
-                        errors={errors}
-                        rules={{ required: "Fabric is required" }}
-                    />
-                    <InputField
-                        label="Technique"
-                        name="technique"
-                        value={product?.technique}
-                        register={register}
-                        errors={errors}
-                        rules={{ required: "Technique is required" }}
-                    />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <InputField
-                        label="Color"
-                        name="color"
-                        value={product?.color}
-                        register={register}
-                        errors={errors}
-                        rules={{ required: "Color is required" }}
-                    />
-                    <InputField
-                        label="Weight"
-                        name="weight"
-                        value={product?.weight}
-                        register={register}
-                        errors={errors}
-                        rules={{ required: "Weight is required" }}
-                    />
+                                <button
+                                    type="button"
+                                    onClick={() => removeExistingImage(i)}
+                                    className="absolute top-0 right-0 text-white bg-red-500 rounded-full px-1 h-6 w-6"
+                                >
+                                    &times;
+                                </button>
+                            </div>
+                        ))}
+                        {newImagePreviews.map((src, i) => (
+                            <div
+                                key={`new-${i}`}
+                                className="relative w-36   h-36"
+                            >
+                                <img
+                                    src={src}
+                                    alt="new img"
+                                    className="w-full h-full object-cover rounded"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removeNewImage(i)}
+                                    className="absolute top-0 right-0 text-white bg-red-500 rounded-full px-1 h-6 w-6"
+                                >
+                                    &times;
+                                </button>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 <InputField
+                    label="Material"
+                    name="material"
+                    register={register}
+                    errors={errors}
+                    rules={{ required: "Material is required" }}
+                />
+                <InputField
+                    label="Weaving"
+                    name="weaving"
+                    register={register}
+                    errors={errors}
+                    rules={{ required: "Weaving is required" }}
+                />
+                <InputField
+                    label="Texture"
+                    name="texture"
+                    register={register}
+                    errors={errors}
+                    rules={{ required: "Texture is required" }}
+                />
+                <InputField
+                    label="Pile Thickness"
+                    name="pileThickness"
+                    register={register}
+                    errors={errors}
+                    rules={{ required: "Pile Thickness is required" }}
+                />
+                <InputField
+                    label="Size"
+                    name="size"
+                    register={register}
+                    errors={errors}
+                    rules={{ required: "Size is required" }}
+                />
+                <InputField
+                    label="Color"
+                    name="color"
+                    register={register}
+                    errors={errors}
+                    rules={{ required: "Color is required" }}
+                />
+                <InputField
+                    label="Weight"
+                    name="weight"
+                    register={register}
+                    errors={errors}
+                    rules={{ required: "Weight is required" }}
+                />
+                <InputField
                     label="Assurance"
                     name="assurance"
-                    value={product?.assurance}
                     register={register}
                     errors={errors}
                     rules={{ required: "Assurance is required" }}
@@ -273,19 +325,23 @@ const EditProduct = () => {
                 <InputField
                     label="HSN Code"
                     name="hsnCode"
-                    value={product?.hsnCode}
                     register={register}
                     errors={errors}
                     rules={{ required: "HSN Code is required" }}
+                />
+                <InputField
+                    label="Style"
+                    name="style"
+                    register={register}
+                    errors={errors}
+                    rules={{ required: "Style is required" }}
                 />
 
                 <div className="flex flex-col sm:flex-row gap-3">
                     <button
                         type="submit"
                         style={{
-                            cursor: `${
-                                isSubmitting ? "not-allowed" : "pointer"
-                            }`,
+                            cursor: isSubmitting ? "not-allowed" : "pointer",
                         }}
                         disabled={isSubmitting}
                         className="bg-neutral-950 text-white px-4 py-2 h-12 text-sm uppercase hover:bg-gray-700 transition-colors duration-200 shadow-md w-full "

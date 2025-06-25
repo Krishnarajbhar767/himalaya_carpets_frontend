@@ -1,309 +1,258 @@
+import { motion } from "framer-motion";
+import Logo from "/Office_Logo.png";
+import { Link } from "react-router-dom";
+const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
+
 const AboutUs = () => {
     const stats = [
-        { number: "10K+", label: "Happy Customers" },
-        { number: "500+", label: "Products" },
-        { number: "50+", label: "Cities" },
-        { number: "15+", label: "Years Experience" },
+        { number: "5000+", label: "Tufted Rugs Monthly" },
+        { number: "5000+", label: "Handloom Rugs Monthly" },
+        { number: "2000+", label: "Knotted Rugs Monthly" },
+        { number: "25+", label: "Years of Craftsmanship" },
+    ];
+
+    const team = [
+        { name: "Sandeep Jaiswal", role: "Sales Contact" },
+        { name: "Suryansh Jaiswal", role: "Sales Contact" },
+        { name: "Varnika Jaiswal", role: "Head Office Contact" },
     ];
 
     return (
-        <div className="bg-white">
-            {/* Simple Header */}
-            <section className="bg-[rgb(83,62,45)] py-12">
-                <div className="container mx-auto px-4">
-                    <h1 className="text-3xl md:text-4xl font-bold text-white text-center">
+        <div className="bg-white text-gray-800">
+            {/* Header */}
+            <section className="bg-[rgb(83,62,45)] py-16">
+                <div className="container mx-auto px-4 text-center">
+                    <motion.h1
+                        variants={fadeInUp}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        className="text-4xl md:text-5xl font-bold text-white"
+                    >
                         About Us
-                    </h1>
+                    </motion.h1>
                 </div>
             </section>
 
-            {/* Company Overview */}
-            <section className="py-8 md:py-12">
-                <div className="container mx-auto px-4">
-                    <div className="max-w-3xl mx-auto">
-                        <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-4">
+            {/* Story */}
+            <section className="py-16">
+                <div className="container mx-auto px-4 grid md:grid-cols-2 gap-10 items-center">
+                    <motion.div
+                        variants={fadeInUp}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        className="order-2 md:order-1"
+                    >
+                        <h2 className="text-3xl font-bold text-[rgb(83,62,45)] mb-4">
                             Our Story
                         </h2>
-                        <p className="text-foreground mb-6">
-                            Founded in 2008, Srijan Fabrics has been dedicated
-                            to preserving and promoting traditional Indian
-                            textile craftsmanship. We work directly with skilled
-                            artisans across India to bring authentic,
-                            high-quality fabrics to customers worldwide.
+                        <p className="mb-4">
+                            Himalaya Carpets is an Indian government-recognized
+                            export house engaged in manufacturing and exporting
+                            all types of handmade carpets. We are rooted in
+                            traditional craftsmanship and dedicated to offering
+                            products that match modern home décor trends.
                         </p>
-                        <p className="text-foreground">
-                            Our journey began with a small workshop and a big
-                            dream to connect traditional craftspeople with
-                            modern markets. Today, we're proud to support
-                            hundreds of artisan families while delivering
-                            exceptional products to our customers.
+                        <p>
+                            Our in-house R&D team and designers work closely
+                            with clients to deliver customized, high-quality
+                            carpets at reasonable prices—ensuring lasting
+                            satisfaction.
                         </p>
-                    </div>
+                    </motion.div>
+                    <motion.div
+                        variants={fadeInUp}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        className="order-1 md:order-2"
+                    >
+                        <img
+                            src={Logo}
+                            alt="Himalaya Carpets"
+                            className="w-full rounded shadow-lg"
+                        />
+                    </motion.div>
                 </div>
             </section>
 
-            {/* Stats Section */}
-            <section className="py-8 bg-gray-100">
-                <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {stats.map((stat, index) => (
-                            <div key={index} className="text-center p-4">
-                                <p className="text-3xl font-bold text-[rgb(83,62,45)]">
-                                    {stat.number}
+            {/* Mission & Vision */}
+            <section className="py-16 bg-gray-50">
+                <div className="container mx-auto px-4 grid md:grid-cols-2 gap-10">
+                    <motion.div
+                        variants={fadeInUp}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                    >
+                        <h2 className="text-3xl font-bold text-[rgb(83,62,45)] mb-4">
+                            Our Mission
+                        </h2>
+                        <p>
+                            To manufacture and export high-quality handmade
+                            carpets by blending traditional craftsmanship with
+                            modern innovation, ensuring customer satisfaction
+                            through stringent quality control and personalized
+                            service.
+                        </p>
+                    </motion.div>
+                    <motion.div
+                        variants={fadeInUp}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                    >
+                        <h2 className="text-3xl font-bold text-[rgb(83,62,45)] mb-4">
+                            Our Vision
+                        </h2>
+                        <p>
+                            To be a globally recognized leader in handmade
+                            carpet craftsmanship, known for innovation,
+                            excellence, and sustainable practices.
+                        </p>
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* Core Values */}
+            <section className="py-16">
+                <div className="container mx-auto px-4 text-center">
+                    <motion.h2
+                        variants={fadeInUp}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        className="text-3xl font-bold text-[rgb(83,62,45)] mb-10"
+                    >
+                        Our Core Values
+                    </motion.h2>
+                    <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                        {[
+                            "Quality Craftsmanship",
+                            "Customer Satisfaction",
+                            "Innovation",
+                            "Sustainability",
+                        ].map((title, i) => (
+                            <motion.div
+                                key={i}
+                                variants={fadeInUp}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true }}
+                                className="bg-white shadow border p-6 rounded-lg"
+                            >
+                                <h3 className="text-xl font-semibold text-[rgb(83,62,45)] mb-2">
+                                    {title}
+                                </h3>
+                                <p>
+                                    {title === "Quality Craftsmanship"
+                                        ? "We deliver only the finest hand-woven carpets using traditional methods."
+                                        : title === "Customer Satisfaction"
+                                        ? "Our top priority is our clients' trust and long-term relationships."
+                                        : title === "Innovation"
+                                        ? "Constant evolution in design and production."
+                                        : "Eco-conscious practices guide our production."}
                                 </p>
-                                <p className="text-foreground">{stat.label}</p>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* Mission & Vision */}
-            <section className="py-8 md:py-12">
-                <div className="container mx-auto px-4">
-                    <div className="max-w-3xl mx-auto">
-                        <div className="mb-8">
-                            <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-4">
-                                Our Mission
-                            </h2>
-                            <p className="text-foreground">
-                                To preserve and promote traditional Indian
-                                textile craftsmanship while making authentic,
-                                high-quality fabrics accessible to customers
-                                worldwide. We strive to support artisan
-                                communities and maintain the cultural heritage
-                                embedded in every thread.
-                            </p>
-                        </div>
-
-                        <div>
-                            <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-4">
-                                Our Vision
-                            </h2>
-                            <p className="text-foreground">
-                                To become the global leader in authentic
-                                traditional fabrics, bridging the gap between
-                                ancient craftsmanship and contemporary fashion.
-                                We envision a world where traditional arts
-                                thrive alongside modern innovation.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Values */}
-            <section className="py-8 md:py-12 bg-gray-100">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-6 text-center">
-                        Our Core Values
-                    </h2>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                        <div className="bg-white p-6 border border-gray-200">
-                            <h3 className="font-bold text-lg text-[rgb(83,62,45)] mb-2">
-                                Quality Craftsmanship
-                            </h3>
-                            <p className="text-foreground">
-                                We believe in preserving traditional art forms
-                                and supporting skilled artisans who pour their
-                                heart into every creation.
-                            </p>
-                        </div>
-
-                        <div className="bg-white p-6 border border-gray-200">
-                            <h3 className="font-bold text-lg text-[rgb(83,62,45)] mb-2">
-                                Quality Assurance
-                            </h3>
-                            <p className="text-foreground">
-                                Every product undergoes rigorous quality checks
-                                to ensure you receive only the finest fabrics
-                                and craftsmanship.
-                            </p>
-                        </div>
-
-                        <div className="bg-white p-6 border border-gray-200">
-                            <h3 className="font-bold text-lg text-[rgb(83,62,45)] mb-2">
-                                Sustainable Practices
-                            </h3>
-                            <p className="text-foreground">
-                                We're committed to eco-friendly production
-                                methods that respect both our environment and
-                                traditional techniques.
-                            </p>
-                        </div>
-
-                        <div className="bg-white p-6 border border-gray-200">
-                            <h3 className="font-bold text-lg text-[rgb(83,62,45)] mb-2">
-                                Heritage & Innovation
-                            </h3>
-                            <p className="text-foreground">
-                                Blending centuries-old traditions with modern
-                                design sensibilities to create timeless pieces
-                                for today's world.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             {/* Team */}
-            <section className="py-8 md:py-12">
+            <section className="py-16 bg-gray-50">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-6 text-center">
-                        Our Team
-                    </h2>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                        <div className="text-center">
-                            <img
-                                src="/placeholder.svg?height=200&width=200"
-                                alt="Rajesh Kumar"
-                                className="w-32 h-32 object-cover rounded-full mx-auto mb-4"
-                            />
-                            <h3 className="font-bold text-[rgb(83,62,45)]">
-                                Rajesh Kumar
-                            </h3>
-                            <p className="text-foreground">Founder & CEO</p>
-                        </div>
-
-                        <div className="text-center">
-                            <img
-                                src="/placeholder.svg?height=200&width=200"
-                                alt="Priya Sharma"
-                                className="w-32 h-32 object-cover rounded-full mx-auto mb-4"
-                            />
-                            <h3 className="font-bold text-[rgb(83,62,45)]">
-                                Priya Sharma
-                            </h3>
-                            <p className="text-foreground">Head of Design</p>
-                        </div>
-
-                        <div className="text-center">
-                            <img
-                                src="/placeholder.svg?height=200&width=200"
-                                alt="Amit Patel"
-                                className="w-32 h-32 object-cover rounded-full mx-auto mb-4"
-                            />
-                            <h3 className="font-bold text-[rgb(83,62,45)]">
-                                Amit Patel
-                            </h3>
-                            <p className="text-foreground">Quality Director</p>
-                        </div>
+                    <motion.h2
+                        variants={fadeInUp}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        className="text-3xl font-bold text-[rgb(83,62,45)] mb-10 text-center"
+                    >
+                        Meet the Team
+                    </motion.h2>
+                    <div className="grid md:grid-cols-3 gap-8 text-center max-w-5xl mx-auto">
+                        {team.map((member, i) => (
+                            <motion.div
+                                key={i}
+                                variants={fadeInUp}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true }}
+                            >
+                                <img
+                                    src={`https://source.unsplash.com/200x200/?person,${
+                                        i + 10
+                                    }`}
+                                    className="w-32 h-32 object-cover rounded-full mx-auto mb-4"
+                                    alt={member.name}
+                                />
+                                <h3 className="font-bold text-[rgb(83,62,45)]">
+                                    {member.name}
+                                </h3>
+                                <p>{member.role}</p>
+                            </motion.div>
+                        ))}
                     </div>
                 </div>
             </section>
 
-            {/* Timeline */}
-            <section className="py-8 md:py-12 bg-gray-100">
+            {/* Stats */}
+            <section className="py-16 bg-gray-100">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-6 text-center">
-                        Our Journey
-                    </h2>
-
-                    <div className="max-w-3xl mx-auto space-y-6">
-                        <div className="flex flex-col md:flex-row">
-                            <div className="md:w-1/4 font-bold text-[rgb(83,62,45)] mb-2 md:mb-0">
-                                2008
-                            </div>
-                            <div className="md:w-3/4">
-                                <h3 className="font-bold text-foreground mb-1">
-                                    Company Founded
-                                </h3>
-                                <p className="text-foreground">
-                                    Started with a small workshop and a big
-                                    dream to preserve traditional craftsmanship.
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                        {stats.map((stat, index) => (
+                            <motion.div
+                                key={index}
+                                variants={fadeInUp}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true }}
+                            >
+                                <p className="text-4xl font-bold text-[rgb(83,62,45)]">
+                                    {stat.number}
                                 </p>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col md:flex-row">
-                            <div className="md:w-1/4 font-bold text-[rgb(83,62,45)] mb-2 md:mb-0">
-                                2012
-                            </div>
-                            <div className="md:w-3/4">
-                                <h3 className="font-bold text-foreground mb-1">
-                                    First Major Expansion
-                                </h3>
-                                <p className="text-foreground">
-                                    Opened our flagship store and expanded our
-                                    artisan network across multiple states.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col md:flex-row">
-                            <div className="md:w-1/4 font-bold text-[rgb(83,62,45)] mb-2 md:mb-0">
-                                2016
-                            </div>
-                            <div className="md:w-3/4">
-                                <h3 className="font-bold text-foreground mb-1">
-                                    Digital Transformation
-                                </h3>
-                                <p className="text-foreground">
-                                    Launched our online platform, making
-                                    authentic fabrics accessible worldwide.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col md:flex-row">
-                            <div className="md:w-1/4 font-bold text-[rgb(83,62,45)] mb-2 md:mb-0">
-                                2020
-                            </div>
-                            <div className="md:w-3/4">
-                                <h3 className="font-bold text-foreground mb-1">
-                                    Sustainability Initiative
-                                </h3>
-                                <p className="text-foreground">
-                                    Implemented eco-friendly practices and
-                                    launched our green production line.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col md:flex-row">
-                            <div className="md:w-1/4 font-bold text-[rgb(83,62,45)] mb-2 md:mb-0">
-                                2024
-                            </div>
-                            <div className="md:w-3/4">
-                                <h3 className="font-bold text-foreground mb-1">
-                                    Global Recognition
-                                </h3>
-                                <p className="text-foreground">
-                                    Received international awards for preserving
-                                    traditional crafts and sustainable
-                                    practices.
-                                </p>
-                            </div>
-                        </div>
+                                <p>{stat.label}</p>
+                            </motion.div>
+                        ))}
                     </div>
                 </div>
             </section>
 
             {/* CTA */}
-            <section className="py-8 md:py-12 bg-[rgb(83,62,45)]">
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+            <section className="py-16 bg-[rgb(83,62,45)] text-white text-center">
+                <div className="container mx-auto px-4">
+                    <motion.h2
+                        variants={fadeInUp}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        className="text-3xl font-bold mb-4"
+                    >
                         Join Our Journey
-                    </h2>
-                    <p className="text-white mb-6 max-w-2xl mx-auto">
-                        Be part of our mission to preserve traditional
-                        craftsmanship and bring authentic fabrics to the world.
+                    </motion.h2>
+                    <p className="mb-6 max-w-2xl mx-auto">
+                        Be part of our mission to deliver high-quality handmade
+                        carpets and support traditional craftsmanship across the
+                        globe.
                     </p>
-                    <div className="space-y-4 md:space-y-0 md:space-x-4">
-                        <a
-                            href="/products"
-                            className="inline-block bg-white text-[rgb(83,62,45)] px-6 py-2 font-medium"
+                    <div className="flex flex-col md:flex-row justify-center gap-4">
+                        <Link
+                            to="/products/all/685a6381e6c33dcf91fa54d0"
+                            className="bg-white text-[rgb(83,62,45)] px-6 py-2 font-medium rounded"
                         >
                             Explore Products
-                        </a>
-                        <a
-                            href="/contact"
-                            className="inline-block bg-transparent border border-white text-white px-6 py-2 font-medium"
+                        </Link>
+                        <Link
+                            to="/contact"
+                            className="border border-white px-6 py-2 font-medium rounded"
                         >
                             Contact Us
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </section>

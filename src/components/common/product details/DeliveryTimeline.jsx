@@ -1,7 +1,11 @@
 import { Clock, Package, Truck, Check } from "lucide-react";
 
+/**
+ * DeliveryTimeline Component
+ * Shows delivery steps and timeline for carpet orders
+ */
 function DeliveryTimeline() {
-    const primaryColor = "rgb(83, 62, 45)";
+    const primaryColor = "rgb(83, 62, 45)"; // or your brand color
     const steps = [
         {
             icon: Clock,
@@ -11,13 +15,13 @@ function DeliveryTimeline() {
         {
             icon: Package,
             title: "Processing & Packaging",
-            description: "1-2 business days",
+            description: "2-3 business days to prepare and inspect",
         },
         {
             icon: Truck,
             title: "Shipping",
             description:
-                "3-5 business days (standard) or 1-2 business days (express)",
+                "5-7 business days (standard) or faster options if available",
         },
         {
             icon: Check,
@@ -27,7 +31,7 @@ function DeliveryTimeline() {
     ];
 
     return (
-        <div className="bg-white p-6 lg:p-10 rounded-lg max-w-5xl mx-auto">
+        <div className="bg-white p-6 lg:p-10 rounded-lg max-w-5xl mx-auto mb-8">
             <h2
                 className="text-2xl font-bold mb-10 text-center"
                 style={{ color: primaryColor }}
@@ -75,7 +79,7 @@ function DeliveryTimeline() {
                             </p>
 
                             {/* Progress dot except after last step */}
-                            {idx < steps.length && (
+                            {idx < steps.length - 1 && (
                                 <div
                                     className="mt-6 rounded-full block"
                                     style={{

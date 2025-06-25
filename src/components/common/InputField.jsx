@@ -11,38 +11,33 @@ const InputField = ({
     readOnly = false,
 }) => {
     const [isFocused, setIsFocused] = useState(false);
-    const [hasValue, setHasValue] = useState(value);
+    const [hasValue, setHasValue] = useState(false);
     const inputRef = useRef(null);
 
-    const handleFocus = () => {
-        setIsFocused(true);
-    };
+    const handleFocus = () => setIsFocused(true);
 
     const handleBlur = (e) => {
         setIsFocused(false);
         setHasValue(e.target.value !== "");
+        if (rules.onBlur) rules.onBlur(e); // Preserve any rule onBlur
     };
 
     useEffect(() => {
-        if (inputRef.current) {
-            setHasValue(inputRef.current.value);
-        }
+        // Delay reading input value to let react-hook-form set it
+        const timeout = setTimeout(() => {
+            if (inputRef.current && inputRef.current.value !== "") {
+                setHasValue(true);
+            }
+        }, 50);
+        return () => clearTimeout(timeout);
     }, []);
 
     return (
         <div className="relative mb-6">
             <input
-                {...register(name, {
-                    ...rules,
-                    onBlur: (e) => {
-                        handleBlur(e);
-                        if (rules.onBlur) rules.onBlur(e); // Preserve any existing onBlur rules
-                    },
-                })}
+                {...register(name, { ...rules, onBlur: handleBlur })}
                 ref={(e) => {
-                    // Assign the ref for react-hook-form
                     register(name, rules).ref(e);
-                    // Also assign to our custom ref
                     inputRef.current = e;
                 }}
                 id={name}
@@ -60,9 +55,7 @@ const InputField = ({
                     isFocused || hasValue
                         ? "top-0 text-xs text-foreground"
                         : "top-1/2 text-base text-foreground/80"
-                } transform ${
-                    errors?.[name] ? "-translate-y-1/2" : "-translate-y-1/2"
-                }`}
+                } transform -translate-y-1/2`}
             >
                 {label}
             </label>

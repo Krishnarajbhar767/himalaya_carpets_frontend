@@ -11,6 +11,7 @@ import productApis from "../../../services/api/admin/product/product.api";
 import { handleAxiosError } from "../../../utils/handleAxiosError";
 import { setProducts } from "../../../redux/slices/productSlice";
 import { useNavigate } from "react-router-dom";
+
 const AddProduct = () => {
     const {
         register,
@@ -23,6 +24,42 @@ const AddProduct = () => {
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
     const dispatch = useDispatch();
+
+    // Static options for select fields. Adjust as needed or fetch from API.
+    const weavingOptions = [
+        { value: "Hand Knotted", label: "Hand Knotted" },
+        { value: "Hand Tufted", label: "Hand Tufted" },
+        { value: "Handloom", label: "Handloom" },
+        { value: "Flatweave", label: "Flatweave" },
+        { value: "Dhurrie", label: "Dhurrie" },
+        // add more as needed
+    ];
+
+    const textureOptions = [
+        { value: "Soft", label: "Soft" },
+        { value: "Medium", label: "Medium" },
+        { value: "Coarse", label: "Coarse" },
+        // etc.
+    ];
+
+    const styleOptions = [
+        { value: "Modern", label: "Modern" },
+        { value: "Traditional", label: "Traditional" },
+        { value: "Abstract", label: "Abstract" },
+        { value: "Boho", label: "Boho" },
+        // etc.
+    ];
+
+    // Example size options; you may also choose free text
+    const sizeOptions = [
+        { value: "3x5 ft", label: "3x5 ft" },
+        { value: "4x6 ft", label: "4x6 ft" },
+        { value: "5x8 ft", label: "5x8 ft" },
+        { value: "6x9 ft", label: "6x9 ft" },
+        { value: "8x10 ft", label: "8x10 ft" },
+        // etc., or allow free text
+    ];
+
     // Handle file input and generate preview
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
@@ -33,30 +70,41 @@ const AddProduct = () => {
 
     // Form submit handler
     const onSubmit = async (data) => {
+        // Validate at least one image
         if (imageFiles.length === 0) {
             toast.error("Please upload at least one image.");
             return;
         }
         const toastId = toast.loading("Please wait...");
         try {
+            // Upload images and get URLs
             const imagesUrls = await uploadMedia(imageFiles);
-            if (!imagesUrls) return;
-            data.images = imagesUrls; // inserting images url into  formData;
+            if (!imagesUrls) {
+                toast.error("Image upload failed.");
+                return;
+            }
+            data.images = imagesUrls;
+
+            // Now data contains:
+            // name, description, price, psft, category, stock,
+            // images, material, weaving, texture, pileThickness, size,
+            // color, weight, assurance, hsnCode, style
             const products = await productApis.createProduct(data);
             dispatch(setProducts(products));
+
+            // Reset form
             reset();
             setImageFiles([]);
             setImagePreviews([]);
+
             toast.success("Product created successfully");
+            // Optionally navigate away or stay on page
+            // navigate("/admin/products");
         } catch (error) {
             handleAxiosError(error);
         } finally {
             toast.dismiss(toastId);
         }
-
-        // Handle your API call here with:
-        // 1. `data` (form fields)
-        // 2. `imageFiles` (for upload API)
     };
 
     const handleCancel = () => {
@@ -71,13 +119,14 @@ const AddProduct = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
-            className="space-y-6 p-4 sm:p-6 max-w-2xl mx-auto"
+            className="space-y-6 p-0 sm:p-6 max-w-2xl mx-auto"
         >
             <h3 className="text-lg font-semibold uppercase text-gray-800 mb-4 tracking-wide">
-                Add Product
+                Add Product (Carpet)
             </h3>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {/* Name */}
                 <InputField
                     label="Name"
                     name="name"
@@ -85,6 +134,8 @@ const AddProduct = () => {
                     errors={errors}
                     rules={{ required: "Product name is required" }}
                 />
+
+                {/* Description */}
                 <InputField
                     label="Description"
                     name="description"
@@ -93,9 +144,10 @@ const AddProduct = () => {
                     rules={{ required: "Description is required" }}
                 />
 
+                {/* Price & Price per sqft */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
-                        label="Price"
+                        label="Price (Total)"
                         name="price"
                         type="number"
                         register={register}
@@ -105,6 +157,18 @@ const AddProduct = () => {
                             min: { value: 0, message: "Must be positive" },
                         }}
                     />
+                    <InputField
+                        label="Price per sqft (e.g., 700)"
+                        type="number"
+                        name="psft"
+                        register={register}
+                        errors={errors}
+                        rules={{ required: "Price per sqft is required" }}
+                    />
+                </div>
+
+                {/* Stock & Category */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Stock"
                         name="stock"
@@ -116,19 +180,18 @@ const AddProduct = () => {
                             min: { value: 0, message: "Must be positive" },
                         }}
                     />
+                    <SelectField
+                        label="Category"
+                        name="category"
+                        register={register}
+                        errors={errors}
+                        rules={{ required: "Category is required" }}
+                        options={categories.map((cat) => ({
+                            value: cat._id || cat.value,
+                            label: cat.name || cat.label,
+                        }))}
+                    />
                 </div>
-
-                <SelectField
-                    label="Category"
-                    name="category"
-                    register={register}
-                    errors={errors}
-                    rules={{ required: "Category is required" }}
-                    options={categories.map((cat) => ({
-                        value: cat._id || cat.value,
-                        label: cat.name || cat.label,
-                    }))}
-                />
 
                 {/* Image Upload */}
                 <div>
@@ -156,24 +219,68 @@ const AddProduct = () => {
                     )}
                 </div>
 
-                {/* More Fields */}
+                {/* Carpet-specific fields */}
+
+                {/* Material & Weaving */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
-                        label="Fabric"
-                        name="fabric"
+                        label="Material (e.g., 100% Jute)"
+                        name="material"
                         register={register}
                         errors={errors}
-                        rules={{ required: "Fabric is required" }}
+                        rules={{ required: "Material is required" }}
                     />
-                    <InputField
-                        label="Technique"
-                        name="technique"
+                    <SelectField
+                        label="Weaving Technique"
+                        name="weaving"
                         register={register}
                         errors={errors}
-                        rules={{ required: "Technique is required" }}
+                        rules={{ required: "Weaving is required" }}
+                        options={weavingOptions}
                     />
                 </div>
 
+                {/* Texture & Pile Thickness */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <SelectField
+                        label="Texture"
+                        name="texture"
+                        register={register}
+                        errors={errors}
+                        rules={{ required: "Texture is required" }}
+                        options={textureOptions}
+                    />
+                    <InputField
+                        label="Pile Thickness (e.g., 2/7 inch)"
+                        name="pileThickness"
+                        register={register}
+                        errors={errors}
+                        rules={{ required: "Pile thickness is required" }}
+                    />
+                </div>
+
+                {/* Size & Style */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* You can switch to InputField if sizes vary too much */}
+                    <SelectField
+                        label="Size"
+                        name="size"
+                        register={register}
+                        errors={errors}
+                        rules={{ required: "Size is required" }}
+                        options={sizeOptions}
+                    />
+                    <SelectField
+                        label="Style"
+                        name="style"
+                        register={register}
+                        errors={errors}
+                        rules={{ required: "Style is required" }}
+                        options={styleOptions}
+                    />
+                </div>
+
+                {/* Color & Weight */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Color"
@@ -183,7 +290,7 @@ const AddProduct = () => {
                         rules={{ required: "Color is required" }}
                     />
                     <InputField
-                        label="Weight (KG)"
+                        label="Weight (e.g., 10 kg)"
                         name="weight"
                         register={register}
                         errors={errors}
@@ -191,8 +298,9 @@ const AddProduct = () => {
                     />
                 </div>
 
+                {/* Assurance & HSN Code */}
                 <InputField
-                    label="Assurance"
+                    label="Assurance (e.g., Colorfast, Long-lasting)"
                     name="assurance"
                     register={register}
                     errors={errors}
@@ -216,7 +324,7 @@ const AddProduct = () => {
                 <div className="flex flex-col sm:flex-row gap-3">
                     <button
                         type="submit"
-                        className="bg-neutral-950 h-12 text-white px-4 py-2 text-sm uppercase hover:bg-gray-700 transition-colors duration-200 shadow-md w-full"
+                        className="bg-neutral-800 h-12 text-white px-4 py-2 text-sm uppercase hover:bg-gray-700 transition-colors duration-200 shadow-md w-full"
                     >
                         Save
                     </button>

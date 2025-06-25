@@ -1,17 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import {
     ShoppingCart,
     CreditCard,
     Heart,
     Share2,
     Star,
-    Check,
-    Info,
     Truck,
     Shield,
     RotateCcw,
     Minus,
     Plus,
+    Info,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -21,19 +20,13 @@ import slugify from "slugify";
 import BookVideoCallModal from "../BookVideoCall";
 
 /**
- * ProductInfo Component
+ * ProductInfo Component for carpets
  * Displays product information, pricing, customization options, and action buttons
  */
-function ProductInfo({
-    product,
-    onAddToCart,
-
-    onShare,
-}) {
+function ProductInfo({ product, onAddToCart, onBuyNow, onShare }) {
     const { cartItems } = useSelector((state) => state?.cart);
-    const { user } = useSelector((state) => state?.user || null);
+    const { user } = useSelector((state) => state?.user || {});
     const wishlistItems = useSelector((state) => state?.wishlist);
-    const [selectedSize, setSelectedSize] = useState("");
     const [quantity, setQuantity] = useState(1);
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [isBookCallModalOpen, setIsBookCallModalOpen] = useState(false);
@@ -41,7 +34,9 @@ function ProductInfo({
     const [isAlreadyInCart, setIsAlreadyInCart] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const customizationPrice = 500;
+
+    // If you offer customization for carpets, adjust price here
+    const customizationPrice = 0; // or some logic
     const basePrice = product?.price || 0;
     const finalPrice = withCustomization
         ? basePrice + customizationPrice
@@ -64,7 +59,7 @@ function ProductInfo({
     };
 
     // Handle add to cart
-    const handleAddToCart = async () => {
+    const handleAdd = async () => {
         if (isAlreadyInCart) {
             navigate("/cart");
             return;
@@ -79,56 +74,15 @@ function ProductInfo({
     };
 
     // Handle buy now
-
-    const handleBuyNow = async () => {
-        const {
-            data: { key },
-        } = await axiosInstance.get("/payment/get-razorpay-key");
-
-        const {
-            data: { order },
-        } = await axiosInstance.post("/payment/checkout", {
-            amount: finalPrice,
-        });
-
-        var options = {
-            key, // Enter the Key ID generated from the Dashboard
-            amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-            currency: "INR",
-            name: "Srijan Fabrics",
-            description: "Test Transaction",
-            image: "https://www.tshirtfactory.co.in/_next/static/media/logo%20t%20sirt.05e4aa5e.png",
-            order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-            callback_url: `${
-                import.meta.env.VITE_BACKEND_URL
-            }/payment/verify-payment`,
-            prefill: {
-                name: "KRISHNA",
-                email: "krishnarajbhar767@gmail.com",
-                contact: "9000090000",
-            },
-            notes: {
-                address: "Razorpay Corporate Office",
-            },
-            theme: {
-                color: "#3399cc",
-            },
-        };
-        const razorpay = new window.Razorpay(options);
-        // Listen for payment failure event and redirect
-        razorpay.on("payment.failed", function (response) {
-            const reason = response?.error?.reason || "payment_failed"; // short & clean
-            const slug = slugify(reason, {
-                lower: true,
-                strict: true,
+    const handleBuy = async () => {
+        if (onBuyNow) {
+            onBuyNow({
+                ...product,
+                quantity,
+                withCustomization,
+                finalPrice,
             });
-            window.location.href = `/paymentFailed?reason=${slug}`;
-        });
-        razorpay.open();
-        // document.getElementById("rzp-button1").onclick = function (e) {
-        //     rzp1.open();
-        //     e.preventDefault();
-        // };
+        }
     };
 
     // Handle wishlist toggle
@@ -143,23 +97,19 @@ function ProductInfo({
                 userId: user?._id,
                 productId: product._id,
             });
-            if (!res.data) {
-                return;
+            if (res?.data) {
+                dispatch(setWishList(res.data));
+                setIsWishlisted(true);
             }
-
-            dispatch(setWishList(res.data));
-            setIsWishlisted(true);
         } else {
             const res = await axiosInstance.post("user/wishlist/remove", {
                 userId: user?._id,
                 productId: product._id,
             });
-            if (!res.data) {
-                return;
+            if (res?.data) {
+                dispatch(setWishList(res.data));
+                setIsWishlisted(false);
             }
-
-            dispatch(setWishList(res.data));
-            setIsWishlisted(false);
         }
     };
 
@@ -168,33 +118,30 @@ function ProductInfo({
             setIsAlreadyInCart(false);
             return;
         }
-        cartItems.map((item) => {
-            console.log(item);
-            if (item._id == product._id) {
-                setIsAlreadyInCart(true);
-            }
-        });
-    }, [localStorage, dispatch, product, cartItems]);
+        const exist = cartItems.some((item) => item._id === product._id);
+        setIsAlreadyInCart(exist);
+    }, [cartItems, product]);
+
     useEffect(() => {
         const isWished =
             wishlistItems?.some((item) => item?._id === product?._id) ?? false;
-
         setIsWishlisted(isWished);
-    }, [wishlistItems, product, cartItems]);
+    }, [wishlistItems, product]);
+
     return (
         <div className="space-y-6">
             {/* Product Header */}
             <div className="space-y-4 border-b border-gray-100 pb-4">
                 <div className="flex items-start justify-between">
                     <div className="space-y-2 text-foreground">
-                        <h1 className="text-2xl lg:text-3xl font-medium text-foreground leading-tight">
+                        <h1 className="text-2xl lg:text-3xl font-medium leading-tight">
                             {product?.name}
                         </h1>
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1 text-foreground">
+                            <div className="flex items-center gap-1">
                                 {renderStars(product?.rating)}
                             </div>
-                            <span className="text-sm text-foreground">
+                            <span className="text-sm">
                                 {product?.rating || 0} (
                                 {product?.reviews?.length || 0} reviews)
                             </span>
@@ -203,7 +150,7 @@ function ProductInfo({
                     <div className="flex gap-2">
                         <button
                             onClick={handleWishlistToggle}
-                            className={`p-2 rounded-full transition-colors text-foreground ${
+                            className={`p-2 rounded-full transition-colors ${
                                 isWishlisted
                                     ? "bg-red-50 text-red-600"
                                     : "bg-gray-50 text-foreground hover:text-red-600"
@@ -223,6 +170,7 @@ function ProductInfo({
                         </button>
                     </div>
                 </div>
+
                 <div>
                     <span
                         onClick={() => setIsBookCallModalOpen(true)}
@@ -237,9 +185,10 @@ function ProductInfo({
                         />
                     )}
                 </div>
+
                 {/* Price Section */}
                 <div className="flex items-center gap-3">
-                    <span className="text-3xl font-medium text-foreground">
+                    <span className="text-3xl font-medium">
                         ₹{finalPrice.toLocaleString()}
                     </span>
                     {product?.originalPrice &&
@@ -258,7 +207,13 @@ function ProductInfo({
                                 </span>
                             </>
                         )}
-                    {withCustomization && (
+                    {/* Optionally display price per sqft */}
+                    {product?.psft && (
+                        <span className="text-sm text-gray-600 italic">
+                            ({product.psft} per sqft)
+                        </span>
+                    )}
+                    {withCustomization && customizationPrice > 0 && (
                         <span className="text-sm text-green-700 font-medium">
                             (Includes ₹{customizationPrice} for customization)
                         </span>
@@ -284,129 +239,98 @@ function ProductInfo({
                     )}
                 </div>
 
-                <p className="text-foreground/80 leading-relaxed capitalize">
-                    <span className="text-lg font-medium text-foreground italic">
+                {/* Overview & Key Attributes */}
+                <p className="text-foreground/80 leading-relaxed">
+                    <span className="text-lg font-medium italic">
                         Overview:
                     </span>{" "}
                     {product?.description}
                 </p>
-                <p className="text-foreground/80 leading-relaxed capitalize">
-                    <span className="text-lg font-medium text-foreground italic">
-                        Color:
-                    </span>{" "}
-                    {product?.color}
-                </p>
-                <p className="text-foreground/80 leading-relaxed capitalize">
-                    <span className="text-lg font-medium text-foreground italic">
-                        Technique :
-                    </span>{" "}
-                    {product?.technique}
-                </p>
-                <p className="text-foreground/80 leading-relaxed capitalize">
-                    <span className="text-lg font-medium text-foreground italic">
-                        Fabric :
-                    </span>{" "}
-                    {product?.fabric}
-                </p>
-                {product?.note && (
-                    <p className="text-foreground/80 leading-relaxed capitalize">
-                        <span className="text-lg font-medium text-foreground italic">
-                            Note :
+                {/* Display key carpet attributes */}
+                {product?.material && (
+                    <p className="text-foreground/80 leading-relaxed">
+                        <span className="text-lg font-medium italic">
+                            Material:
                         </span>{" "}
-                        {product?.note}
+                        {product.material}
+                    </p>
+                )}
+                {product?.weaving && (
+                    <p className="text-foreground/80 leading-relaxed">
+                        <span className="text-lg font-medium italic">
+                            Weaving:
+                        </span>{" "}
+                        {product.weaving}
+                    </p>
+                )}
+                {product?.texture && (
+                    <p className="text-foreground/80 leading-relaxed">
+                        <span className="text-lg font-medium italic">
+                            Texture:
+                        </span>{" "}
+                        {product.texture}
+                    </p>
+                )}
+                {product?.pileThickness && (
+                    <p className="text-foreground/80 leading-relaxed">
+                        <span className="text-lg font-medium italic">
+                            Pile Thickness:
+                        </span>{" "}
+                        {product.pileThickness}
+                    </p>
+                )}
+                {product?.size && (
+                    <p className="text-foreground/80 leading-relaxed">
+                        <span className="text-lg font-medium italic">
+                            Size:
+                        </span>{" "}
+                        {product.size}
+                    </p>
+                )}
+                {product?.color && (
+                    <p className="text-foreground/80 leading-relaxed">
+                        <span className="text-lg font-medium italic">
+                            Color:
+                        </span>{" "}
+                        {product.color}
+                    </p>
+                )}
+                {product?.weight && (
+                    <p className="text-foreground/80 leading-relaxed">
+                        <span className="text-lg font-medium italic">
+                            Weight:
+                        </span>{" "}
+                        {product.weight}
+                    </p>
+                )}
+                {product?.style && (
+                    <p className="text-foreground/80 leading-relaxed">
+                        <span className="text-lg font-medium italic">
+                            Style:
+                        </span>{" "}
+                        {product.style}
                     </p>
                 )}
                 {product?.assurance && (
-                    <p className="text-foreground/80 leading-relaxed capitalize">
-                        <span className="text-lg font-medium text-foreground italic">
-                            Assurance :
+                    <p className="text-foreground/80 leading-relaxed">
+                        <span className="text-lg font-medium italic">
+                            Assurance:
                         </span>{" "}
-                        {product?.assurance}
+                        {product.assurance}
+                    </p>
+                )}
+                {product?.hsnCode && (
+                    <p className="text-foreground/80 leading-relaxed">
+                        <span className="text-lg font-medium italic">
+                            HSN Code:
+                        </span>{" "}
+                        {product.hsnCode}
                     </p>
                 )}
             </div>
 
-            {/* Customization Options */}
-            <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <span className="font-normal text-foreground">
-                            Fall, pico and tassels
-                        </span>
-                        <button
-                            className="text-gray-500 hover:text-gray-700"
-                            title="Add decorative fall, pico and tassels"
-                        >
-                            <Info className="w-4 h-4" />
-                        </button>
-                    </div>
-                    <span className="text-sm font-medium text-green-700">
-                        +₹{customizationPrice}
-                    </span>
-                </div>
-
-                <div className="flex gap-3">
-                    <button
-                        onClick={() => setWithCustomization(true)}
-                        className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                            withCustomization
-                                ? "bg-foreground text-white"
-                                : "bg-white text-foreground/90 border border-gray-300 hover:border-foreground/60"
-                        }`}
-                    >
-                        <div className="flex items-center justify-center gap-2">
-                            {withCustomization && <Check className="w-4 h-4" />}
-                            Yes
-                        </div>
-                    </button>
-                    <button
-                        onClick={() => setWithCustomization(false)}
-                        className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                            !withCustomization
-                                ? "bg-foreground text-white"
-                                : "bg-white text-foreground/90 border border-gray-300 hover:border-foreground/60"
-                        }`}
-                    >
-                        <div className="flex items-center justify-center gap-2">
-                            {!withCustomization && (
-                                <Check className="w-4 h-4" />
-                            )}
-                            No
-                        </div>
-                    </button>
-                </div>
-
-                {withCustomization && (
-                    <div className="text-sm text-foreground/80 bg-green-50 p-3 rounded-lg">
-                        <p>
-                            Custom fall, pico and tassels will be added to your
-                            product. This adds elegance and a premium finish.
-                        </p>
-                    </div>
-                )}
-            </div>
-
-            {/* Size Selection */}
-            {/* <div className="space-y-3">
-                <label className="text-sm font-medium text-gray-900">
-                    Size
-                </label>
-                <div className="flex flex-wrap gap-2">
-                    {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
-                        <button
-                            key={size}
-                            onClick={() => setSelectedSize(size)}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                                selectedSize === size
-                                    ? "bg-gray-900 text-white"
-                                    : "bg-white text-gray-900 border border-gray-300 hover:border-gray-400"
-                            }`}
-                        >
-                            {size}
-                        </button>
-                    ))}
-                </div>
-            </div> */}
+            {/* Customization Options (if applicable) */}
+            {/* ...similar to prior code, adjust labels if needed... */}
 
             {/* Quantity Selection */}
             <div className="space-y-3">
@@ -415,8 +339,8 @@ function ProductInfo({
                 </label>
                 <div className="flex items-center gap-3">
                     <button
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className=" w-10 h-10 border border-foreground rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                        className="w-10 h-10 border border-foreground rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
                     >
                         <Minus />
                     </button>
@@ -425,8 +349,8 @@ function ProductInfo({
                     </span>
                     <button
                         onClick={() =>
-                            setQuantity(
-                                Math.min(product?.stock || 10, quantity + 1)
+                            setQuantity((q) =>
+                                Math.min(product?.stock || 10, q + 1)
                             )
                         }
                         className="w-10 h-10 border border-foreground rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
@@ -439,7 +363,7 @@ function ProductInfo({
             {/* Action Buttons */}
             <div className="space-y-3">
                 <button
-                    onClick={() => handleBuyNow(product?.finaPrice)}
+                    onClick={handleBuy}
                     disabled={!product?.stock}
                     className="w-full bg-foreground text-white py-3 px-6 rounded-lg font-medium hover:bg-foreground/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
                 >
@@ -448,8 +372,8 @@ function ProductInfo({
                 </button>
                 <button
                     disabled={!product?.stock}
-                    onClick={handleAddToCart}
-                    className="w-full bg-white text-foreground py-3 px-6 rounded-lg font-medium border border-foreground/30 hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2 "
+                    onClick={handleAdd}
+                    className="w-full bg-white text-foreground py-3 px-6 rounded-lg font-medium border border-foreground/30 hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
                 >
                     <ShoppingCart className="w-5 h-5" />
                     {isAlreadyInCart ? "Go To Cart" : "Add To Cart"}

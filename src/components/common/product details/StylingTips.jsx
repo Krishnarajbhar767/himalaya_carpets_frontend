@@ -1,22 +1,35 @@
 import { Instagram } from "lucide-react";
-import BackgroundImage from "../../../assets/images/Product_Details/SF_670x370.jpg";
 
+/**
+ * StylingTips Component
+ * Provides tips on styling carpets in interior spaces
+ */
 function StylingTips() {
     const tips = [
         {
-            title: "Traditional Occasions",
+            title: "Living Room Layering",
             description:
-                "Pair with traditional jewelry and a matching blouse for weddings and formal events.",
+                "Place a larger neutral rug underneath and layer a patterned carpet on top to add depth and texture.",
         },
         {
-            title: "Contemporary Look",
+            title: "Define Zones",
             description:
-                "Style with a designer blouse and minimal accessories for a modern interpretation.",
+                "Use carpets to define seating or dining areas in open-plan spaces, anchoring furniture arrangements.",
         },
         {
-            title: "Festive Ensemble",
+            title: "Color Coordination",
             description:
-                "Add statement jewelry and embellished footwear for festive celebrations.",
+                "Match carpet colors with throw pillows or curtains for a cohesive look; use contrasting hues for a bold statement.",
+        },
+        {
+            title: "Bedroom Comfort",
+            description:
+                "Position a soft, plush carpet under the bed so your feet land on a warm surface when waking up.",
+        },
+        {
+            title: "Outdoor Extension",
+            description:
+                "For outdoor carpets, style your patio by pairing with weather-resistant cushions and potted plants.",
         },
     ];
 
@@ -46,24 +59,19 @@ function StylingTips() {
                     </div>
                 </div>
                 <div
-                    className="p-6 lg:p-8 flex items-center   
-                    rounded-sm overflow-hidden
-                    justify-center  relative  bg-[url('./assets/images/Product_Details/SF_670x370.jpg')] bg-cover bg-no-repeat"
+                    className="p-6 lg:p-8 flex items-center justify-center bg-gray-50 rounded-sm"
+                    // Optionally use a background image or placeholder
                 >
-                    {/* <img src={BackgroundImage} className="absolute z-0" /> */}
-                    <div className="text-center z-10 text-white">
-                        <Instagram className="w-10 h-10  mx-auto mb-3" />
-                        <h3 className="text-xl font-bold  mb-2">
-                            Share Your Style
+                    <div className="text-center text-foreground">
+                        <Instagram className="w-10 h-10 mx-auto mb-3" />
+                        <h3 className="text-xl font-bold mb-2">
+                            Share Your Space
                         </h3>
-                        <p
-                            className="text-white
-                         mb-4"
-                        >
-                            Tag us on Instagram with #YourBrandStyle to be
+                        <p className="mb-4">
+                            Tag us on Instagram with #HimalayaCarpetsStyle to be
                             featured on our page
                         </p>
-                        <button className=" text-foreground px-6 py-2 rounded-lg font-medium  transition-colors bg-white border border-transparent hover:bg-transparent hover:border-white hover:text-white">
+                        <button className="text-foreground px-6 py-2 rounded-lg font-medium border border-foreground hover:bg-foreground hover:text-white transition-colors">
                             Follow Us
                         </button>
                     </div>

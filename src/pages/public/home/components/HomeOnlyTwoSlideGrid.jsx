@@ -1,25 +1,25 @@
 import React, { useState } from "react";
 import Heading from "./Heading";
 import SubHeading from "./SubHeading";
-import { motion, AnimatePresence } from "framer-motion";
-import Banner1 from "../../../../assets/images/Home/HomeOnlyTwoSlideGrid/SF_640x640_1.jpg";
-import Banner2 from "../../../../assets/images/Home/HomeOnlyTwoSlideGrid/SF_640x640_2.jpg";
+import { motion, AnimatePresence } from "framer-motion"; // Import framer-motion for animations
+import Banner1 from "../../../../assets/images/Home/HomeOnlyTwoSlideGrid/HC_640x640_1.jpg";
+import Banner2 from "../../../../assets/images/Home/HomeOnlyTwoSlideGrid/HC_640x640_2.jpg";
 
 function HomeOnlyTwoSlideGrid() {
     const [slideIndex, setSlideIndex] = useState(0);
 
     const slideData = [
         {
-            heading: "Gulab Bari",
+            heading: "Heritage Weaves",
             subHeading:
-                "The Gulab Bari collection pays homage to this heritage Banarasi music festival, translating its ethos through handwoven, hand-dyed, and brush-painted textile artistry. Light and airy Khaddi Georgettes are adorned with Chaiti roses in full bloom, lyrical drapes display serene ombrés symbolic of seasonal transitions, and cascading roseate vines come together in a silken symphony.",
+                "Step into a world of tradition with our handcrafted carpets. Woven by skilled artisans, each design reflects timeless patterns, rich textures, and the soul of heritage craftsmanship — perfect for classic, warm interiors.",
             discoverLink: "href",
             image: Banner1,
         },
         {
-            heading: "Antinomy",
+            heading: "Modern Elegance",
             subHeading:
-                "Antinomy reimagines Banarasi artistry through a modern lens, where classic craftsmanship evolves into contemporary expression, bringing forth pieces that challenge convention while remaining deeply rooted in tradition.",
+                "Discover sleek, contemporary carpet styles crafted for the modern home. Clean lines, minimalist tones, and refined details — where comfort meets cutting-edge design.",
             discoverLink: "href2",
             image: Banner2,
         },
@@ -44,7 +44,7 @@ function HomeOnlyTwoSlideGrid() {
                 <motion.img
                     key={slideData[slideIndex].image}
                     src={slideData[slideIndex].image}
-                    className="h-[400px] lg:h-[600px] w-full object-cover object-top order-1 md:order-2"
+                    className="h-[300px] lg:h-[600px] w-full object-cover object-top order-1 md:order-2"
                     alt="hero section banarasi saree"
                     variants={imageVariants}
                     initial="hidden"

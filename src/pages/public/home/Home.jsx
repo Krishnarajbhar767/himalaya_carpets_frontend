@@ -10,65 +10,60 @@ import Home2BigGrid from "./components/Home2BigGrid";
 import HomeOnlyTwoSlideGrid from "./components/HomeOnlyTwoSlideGrid";
 import HomeOneImageOnly from "./components/HomeOneImageOnly";
 import HomeLetsExplore from "./components/HomeLetsExplore";
-import Banner1 from "../../../assets/images/slider/SF_BNNR_1920X1080.jpg_1.jpg";
-import Banner2 from "../../../assets/images/slider/SF_BNNR_1920X1080.jpg_2.jpg";
-import Banner3 from "../../../assets/images/slider/SF_BNNR_1920X1080.jpg_3.jpg";
-import Banner4 from "../../../assets/images/slider/SF_BNNR_1920X1080_4.jpg";
-import Slide2Banner1 from "../../../assets/images/slider2/SF_BNNR_1920X1080_5.jpg";
-import Slide2Banner2 from "../../../assets/images/slider2/SF_BNNR_1920X1080_6.jpg";
+import Banner1 from "../../../assets/images/slider/HC_1920X1080.jpg_1.jpg";
+import Banner2 from "../../../assets/images/slider/HC_1920X1080.jpg_2.jpg";
+import Banner3 from "../../../assets/images/slider/HC_1920X1080.jpg_3.jpg";
+
+import Slide2Banner1 from "../../../assets/images/slider2/HC_1920X1080_2_a.jpg";
+import Slide2Banner2 from "../../../assets/images/slider2/HC_1920X1080_2_b.jpg";
 function Home() {
     const sliderData1 = useMemo(
         () => [
             {
                 image: Banner1,
-                heading: "Grace in Every Thread",
-                subheading: "Handwoven Elegance",
+                heading: "Elegance Beneath Your Feet",
+                subheading: "Handwoven Luxury Carpets",
                 paragraph:
-                    "Celebrate timeless tradition with sarees that carry the legacy of skilled artisans. Every fold speaks of heritage.",
+                    "Transform your home with artisanal carpets that blend tradition with timeless design. Every weave tells a story of heritage.",
             },
             {
                 image: Banner2,
-                heading: "Drape Your Story",
-                subheading: "Modern Roots in Classic Weaves",
+                heading: "Crafted for Comfort",
+                subheading: "Designs that Define Spaces",
                 paragraph:
-                    "From boardrooms to banquets, our sarees blend contemporary chic with cultural richness, made for every woman’s journey.",
+                    "From minimalist to majestic, our carpets are made to elevate your interiors — comfort and style woven together.",
             },
             {
                 image: Banner3,
-                heading: "Crafted with Heart",
-                subheading: "From Loom to Love",
+                heading: "Art You Can Walk On",
+                subheading: "Where Tradition Meets Innovation",
                 paragraph:
-                    "Each piece is more than fabric — it’s an emotion. Woven by hands, worn with pride. Discover sarees that feel like home.",
+                    "Our carpets are more than décor, they’re masterpieces made by skilled hands, tailored to the modern lifestyle.",
             },
         ],
         []
     );
+
     const sliderData2 = useMemo(
         () => [
             {
                 image: Slide2Banner1,
-                heading: "Grace in Every Thread",
-                subheading: "Handwoven Elegance",
+                heading: "Elegance Beneath Your Feet",
+                subheading: "Handwoven Luxury Carpets",
                 paragraph:
-                    "Celebrate timeless tradition with sarees that carry the legacy of skilled artisans. Every fold speaks of heritage.",
+                    "Transform your home with artisanal carpets that blend tradition with timeless design. Every weave tells a story of heritage.",
             },
             {
                 image: Slide2Banner2,
-                heading: "Drape Your Story",
-                subheading: "Modern Roots in Classic Weaves",
+                heading: "Crafted for Comfort",
+                subheading: "Designs that Define Spaces",
                 paragraph:
-                    "From boardrooms to banquets, our sarees blend contemporary chic with cultural richness, made for every woman’s journey.",
+                    "From minimalist to majestic, our carpets are made to elevate your interiors — comfort and style woven together.",
             },
-            // {
-            //     image: Banner3,
-            //     heading: "Crafted with Heart",
-            //     subheading: "From Loom to Love",
-            //     paragraph:
-            //         "Each piece is more than fabric — it’s an emotion. Woven by hands, worn with pride. Discover sarees that feel like home.",
-            // },
         ],
         []
     );
+
     return (
         <div className="w-full h-full">
             <div>

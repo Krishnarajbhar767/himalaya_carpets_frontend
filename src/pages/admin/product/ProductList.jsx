@@ -171,7 +171,7 @@ const ProductList = () => {
                             <img
                                 src={product.images[0]}
                                 alt={product.name}
-                                className="w-20 h-20 object-cover mx-auto rounded-md"
+                                className="w-36 h-36 object-cover mx-auto rounded-xs object-top"
                             />
                             <h3 className="text-base font-medium text-gray-800 text-center">
                                 {product.name}
